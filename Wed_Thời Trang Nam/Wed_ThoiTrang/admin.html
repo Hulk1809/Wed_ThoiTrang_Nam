@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - Admin Dashboard Pro</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --sidebar-bg: linear-gradient(180deg, #0f172a 0%, #1e293b 55%, #0f172a 100%);
+      --accent: #ef4444;
+      --accent-soft: rgba(239, 68, 68, 0.18);
+    }
+    body { background: #f1f5f9; }
+    .sidebar {
+      width: 280px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15);
+    }
+    .content { margin-left: 280px; }
+    @media (max-width: 768px) { .sidebar { left: -280px; } .content { margin-left: 0; } }
+    .sidebar.open { left: 0 !important; }
+
+    .nav-link {
+      color: #e2e8f0 !important;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .nav-link i { opacity: 0.85; }
+    .nav-link:hover {
+      background: rgba(255,255,255,0.08) !important;
+      color: #fff !important;
+      border-color: rgba(255,255,255,0.06);
+    }
+    .nav-link.active {
+      background: var(--accent-soft) !important;
+      color: #fff !important;
+      font-weight: 600;
+      border-color: rgba(239, 68, 68, 0.35);
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+    .nav-link.active i { color: #fca5a5 !important; opacity: 1; }
+
+    .page-title {
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+    .page-title::after {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 4px;
+      background: linear-gradient(90deg, #ef4444, #f97316);
+      border-radius: 2px;
+      margin-top: 8px;
+    }
+    .admin-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+    .admin-thead {
+      background: linear-gradient(90deg, #1e293b, #334155) !important;
+    }
+    .admin-thead th {
+      color: #f8fafc !important;
+      font-weight: 600 !important;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 1rem 1.5rem !important;
+      border: none !important;
+    }
+    .admin-tbody tr:hover { background: #f8fafc; }
+    .admin-tbody td { color: #1e293b; padding: 1.25rem 1.5rem !important; }
+    .empty-state { color: #64748b; font-size: 0.95rem; }
+
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+    .status-pending { background: #fef3c7; color: #d97706; }
+    .status-processing { background: #dbeafe; color: #1d4ed8; }
+    .status-shipped { background: #d1fae5; color: #065f46; }
+    .status-delivered { background: #f0fdf4; color: #16a34a; }
+    .status-cancelled { background: #fee2e2; color: #dc2626; }
+    .role-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; }
+    .role-admin { background: #ef4444; color: white; }
+    .role-staff { background: #10b981; color: white; }
+    .role-user { background: #6b7280; color: white; }
+    body.modal-open { overflow: hidden; }
+    .admin-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 1rem;
+    }
+    .admin-modal-panel {
+      margin: 1.5rem auto 2rem;
+      width: 100%;
+      max-width: 56rem;
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      max-height: none;
+    }
+    .admin-modal-header {
+      flex-shrink: 0;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      background: #fff;
+      border-radius: 1rem 1rem 0 0;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .admin-modal-body {
+      flex: 1;
+      overflow: visible;
+      padding: 1.25rem 1.5rem 2rem;
+    }
+    .admin-modal-footer {
+      flex-shrink: 0;
+      padding: 1rem 1.5rem 1.5rem;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+      border-radius: 0 0 1rem 1rem;
+    }
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .upload-btn-image { background: #4f46e5; }
+    .upload-btn-image:hover { background: #4338ca; }
+    .upload-btn-video { background: #e11d48; }
+    .upload-btn-video:hover { background: #be123c; }
+    .upload-zone {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- MOBILE MENU BUTTON -->
+  <button id="mobile-menu" class="md:hidden fixed top-4 left-4 z-50 bg-red-600 text-white p-3 rounded-full shadow-lg">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar fixed h-full z-40 flex flex-col p-6 overflow-y-auto" id="sidebar">
+    <div class="flex items-center gap-4 mb-12 pb-6 border-b border-white/10">
+      <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+        <i class="fas fa-crown text-red-400 text-xl"></i>
+      </div>
+      <h1 class="text-xl font-bold text-white tracking-tight">Shop Admin Pro</h1>
+    </div>
+    <nav class="flex-1 space-y-1.5">
+      <a href="#" class="nav-link active flex items-center gap-3 p-3.5 rounded-xl" data-tab="products">
+        <i class="fas fa-box text-red-400 w-5 text-center"></i> <span>Quản lý sản phẩm</span>
+      </a>
+      <a href="#" class="nav-link flex items-center gap-3 p-3.5 rounded-xl" data-tab="orders">
+        <i class="fas fa-shopping-cart text-sky-400 w-5 text-center"></i> <span>Quản lý đơn hàng</span>
+      </a>
+      <a href="#" class="nav-link flex items-center gap-3 p-3.5 rounded-xl" data-tab="users">
+        <i class="fas fa-users text-emerald-400 w-5 text-center"></i> <span>Quản lý người dùng</span>
+      </a>
+      <a href="#" class="nav-link flex items-center gap-3 p-3.5 rounded-xl" data-tab="promotions">
+        <i class="fas fa-tags text-amber-400 w-5 text-center"></i> <span>Khuyến mãi</span>
+      </a>
+      <a href="#" class="nav-link flex items-center gap-3 p-3.5 rounded-xl" data-tab="reports">
+        <i class="fas fa-chart-line text-violet-400 w-5 text-center"></i> <span>Báo cáo thống kê</span>
+      </a>
+      <a href="#" class="nav-link flex items-center gap-3 p-3.5 rounded-xl" data-tab="datamining">
+        <i class="fas fa-brain text-purple-400 w-5 text-center"></i> <span>Data Mining</span>
+      </a>
+    </nav>
+    <button onclick="logout()" class="flex items-center gap-3 p-3.5 rounded-xl mt-6 text-red-300 hover:bg-red-500/15 hover:text-red-200 transition-all w-full">
+      <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
+    </button>
+  </div>
+
+  <!-- OVERLAY -->
+  <div id="overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content p-6 md:p-8">
+    <div id="js-error-banner" class="hidden max-w-3xl mx-auto mt-4 p-4 bg-red-50 border border-red-300 text-red-700 rounded-xl text-sm"></div>
+
+    <!-- LOGIN -->
+    <div id="login-form" class="max-w-md mx-auto mt-24 bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20">
+      <div class="text-center mb-8">
+        <i class="fas fa-shield-alt text-6xl text-red-500 mb-4"></i>
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h2>
+        <p class="text-gray-600">Nhập mật khẩu để truy cập</p>
+      </div>
+      <input type="password" id="admin-pass" placeholder="Mật khẩu quản trị" class="w-full p-4 border border-gray-300 rounded-xl text-lg mb-6 focus:ring-2 focus:ring-red-500 focus:border-transparent">
+      <button onclick="login()" class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-red-500/25 transition-all duration-300">
+        <i class="fas fa-lock-open mr-2"></i> Đăng nhập
+      </button>
+      <p class="text-xs text-center mt-4 text-gray-500">Mật khẩu: <code class="bg-gray-100 px-2 py-1 rounded text-red-600 font-mono">admin123</code></p>
+      <p class="text-[10px] text-center mt-2 text-gray-400">Mở bằng <strong>Live Server</strong> (port 5500), không mở trực tiếp file HTML</p>
+    </div>
+
+    <!-- DASHBOARD TABS -->
+    <div id="tab-products" class="tab-content hidden">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
+        <h2 class="text-3xl font-bold page-title">Quản lý sản phẩm</h2>
+        <div class="flex gap-4">
+          <button onclick="openProductModal()" class="bg-gradient-to-r from-green-500 to-teal-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-green-500/25">
+            <i class="fas fa-plus mr-2"></i> Thêm sản phẩm
+          </button>
+          <button onclick="exportProducts()" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-blue-500/25">
+            <i class="fas fa-download mr-2"></i> Xuất Excel
+          </button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="admin-thead">
+              <tr>
+                <th class="text-left">Hình ảnh</th>
+                <th class="text-left">Tên sản phẩm</th>
+                <th class="text-left">Giá</th>
+                <th class="text-left">Danh mục</th>
+                <th class="text-left">Tồn kho</th>
+                <th class="text-left">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="product-table-body" class="admin-tbody divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div id="tab-orders" class="tab-content hidden">
+      <h2 class="text-3xl font-bold page-title mb-8">Quản lý đơn hàng</h2>
+      <div class="admin-card">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="admin-thead">
+              <tr>
+                <th class="text-left">Mã đơn</th>
+                <th class="text-left">Khách hàng</th>
+                <th class="text-left">Sản phẩm</th>
+                <th class="text-left">Tổng tiền</th>
+                <th class="text-left">Trạng thái</th>
+                <th class="text-left">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="order-table-body" class="admin-tbody divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div id="tab-users" class="tab-content hidden">
+      <h2 class="text-3xl font-bold page-title mb-8">Quản lý người dùng</h2>
+      <div class="admin-card">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="admin-thead">
+              <tr>
+                <th class="text-left">Email</th>
+                <th class="text-left">Tên</th>
+                <th class="text-left">Vai trò</th>
+                <th class="text-left">Trạng thái</th>
+                <th class="text-left">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="user-table-body" class="admin-tbody divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMOTIONS TAB -->
+    <div id="tab-promotions" class="tab-content hidden">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold page-title">Khuyến mãi & Mã giảm giá</h2>
+        <button onclick="openPromoModal()" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg">
+          <i class="fas fa-plus mr-2"></i> Tạo mã mới
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-200/30 rounded-xl p-6 text-center">
+          <i class="fas fa-percent text-blue-500 text-3xl mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Giảm %</h3>
+          <p class="text-2xl font-bold text-blue-600">10-50%</p>
+        </div>
+        <div class="bg-gradient-to-br from-green-500/10 to-teal-500/10 border border-green-200/30 rounded-xl p-6 text-center">
+          <i class="fas fa-money-bill-wave text-green-500 text-3xl mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Giảm tiền</h3>
+          <p class="text-2xl font-bold text-green-600">50.000đ</p>
+        </div>
+        <div class="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-200/30 rounded-xl p-6 text-center">
+          <i class="fas fa-gift text-orange-500 text-3xl mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Mã hot</h3>
+          <p class="text-2xl font-bold text-orange-600">Shop50</p>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="admin-thead">
+              <tr>
+                <th class="text-left">Mã</th>
+                <th class="text-left">Giảm giá</th>
+                <th class="text-left">Áp dụng</th>
+                <th class="text-left">Sử dụng</th>
+                <th class="text-left">Trạng thái</th>
+                <th class="text-left">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="promo-table-body" class="admin-tbody divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTS TAB -->
+    <div id="tab-reports" class="tab-content hidden">
+      <h2 class="text-3xl font-bold page-title mb-8">Báo cáo & Thống kê</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-200/30 rounded-xl p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-emerald-700 uppercase tracking-wide">Doanh thu hôm nay</p>
+              <p class="text-3xl font-bold text-emerald-600 mt-2" id="today-revenue">12.450.000đ</p>
+            </div>
+            <i class="fas fa-chart-line text-emerald-500 text-3xl"></i>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-200/30 rounded-xl p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-blue-700 uppercase tracking-wide">Đơn hàng</p>
+              <p class="text-3xl font-bold text-blue-600 mt-2" id="total-orders">156</p>
+            </div>
+            <i class="fas fa-shopping-bag text-blue-500 text-3xl"></i>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-200/30 rounded-xl p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-purple-700 uppercase tracking-wide">Sản phẩm bán chạy</p>
+              <p class="text-3xl font-bold text-purple-600 mt-2" id="top-product">89</p>
+            </div>
+            <i class="fas fa-trophy text-purple-500 text-3xl"></i>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-200/30 rounded-xl p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-amber-700 uppercase tracking-wide">Khách VIP</p>
+              <p class="text-3xl font-bold text-amber-600 mt-2" id="vip-customers">24</p>
+            </div>
+            <i class="fas fa-star text-amber-500 text-3xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-6">Doanh thu theo tháng</h3>
+          <canvas id="revenue-chart" height="100"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-6">Sản phẩm bán chạy</h3>
+          <div id="top-products-list" class="space-y-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA MINING TAB -->
+    <div id="tab-datamining" class="tab-content hidden">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
+        <div>
+          <h2 class="text-3xl font-bold page-title">Data Mining & K-means</h2>
+          <p class="text-gray-500 text-sm mt-1">Phân tích hành vi khách hàng, video tracking và phân nhóm K-means</p>
+        </div>
+        <div class="flex gap-3 flex-wrap">
+          <select id="kmeans-k" class="px-4 py-2 border rounded-xl text-sm">
+            <option value="3" selected>K = 3 nhóm</option>
+            <option value="4">K = 4 nhóm</option>
+            <option value="5">K = 5 nhóm</option>
+          </select>
+          <button onclick="runKMeans()" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-xl font-semibold shadow-lg hover:shadow-purple-500/25">
+            <i class="fas fa-play mr-2"></i> Chạy K-means
+          </button>
+          <button onclick="seedDemoData()" class="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-2 rounded-xl font-semibold shadow-lg">
+            <i class="fas fa-database mr-2"></i> Tạo dữ liệu demo
+          </button>
+          <button onclick="loadDataMiningDashboard()" class="bg-gray-600 text-white px-6 py-2 rounded-xl font-semibold">
+            <i class="fas fa-sync mr-2"></i> Làm mới
+          </button>
+          <button onclick="generateAdStrategy()" id="btn-ad-strategy" class="bg-gradient-to-r from-rose-500 to-pink-600 text-white px-6 py-2 rounded-xl font-semibold shadow-lg hover:shadow-rose-500/25">
+            <i class="fas fa-robot mr-2"></i> AI đề xuất QC
+          </button>
+        </div>
+      </div>
+
+      <div id="dm-status" class="hidden mb-4 p-4 rounded-xl text-sm"></div>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-purple-500">
+          <p class="text-xs uppercase tracking-wide text-gray-500">Tổng sự kiện</p>
+          <p class="text-3xl font-bold text-purple-600 mt-2" id="dm-total-events">—</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-blue-500">
+          <p class="text-xs uppercase tracking-wide text-gray-500">Lượt xem video</p>
+          <p class="text-3xl font-bold text-blue-600 mt-2" id="dm-video-views">—</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-emerald-500">
+          <p class="text-xs uppercase tracking-wide text-gray-500">Tỷ lệ xem hết video</p>
+          <p class="text-3xl font-bold text-emerald-600 mt-2" id="dm-completion-rate">—</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-amber-500">
+          <p class="text-xs uppercase tracking-wide text-gray-500">Nhóm K-means</p>
+          <p class="text-3xl font-bold text-amber-600 mt-2" id="dm-cluster-count">—</p>
+        </div>
+      </div>
+
+      <!-- K-means Results -->
+      <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-users-cog text-purple-500 mr-2"></i>Phân nhóm khách hàng (K-means)</h3>
+        <div id="kmeans-profiles" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <p class="text-gray-400 col-span-3 text-center py-6">Nhấn "Chạy K-means" để phân tích dữ liệu hành vi</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Thống kê sự kiện</h3>
+          <canvas id="dm-event-chart" height="200"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Phân bố nhóm K-means</h3>
+          <canvas id="dm-cluster-chart" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-eye text-blue-500 mr-2"></i>Top sản phẩm được xem</h3>
+          <div id="dm-top-products" class="space-y-3 text-sm">Đang tải...</div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-video text-red-500 mr-2"></i>Top video được xem</h3>
+          <div id="dm-top-videos" class="space-y-3 text-sm">Đang tải...</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-heart text-pink-500 mr-2"></i>Sở thích khách hàng (Interest Analysis)</h3>
+        <div id="dm-interest" class="flex flex-wrap gap-2 text-sm">Đang tải...</div>
+      </div>
+
+      <!-- AI CHIẾN LƯỢC XOAY KÊNH QUẢNG CÁO -->
+      <div class="bg-gradient-to-br from-rose-50 to-orange-50 rounded-2xl shadow-xl p-6 mb-8 border border-rose-200/60">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800">
+              <i class="fas fa-bullhorn text-rose-500 mr-2"></i>AI đề xuất chiến lược xoay kênh quảng cáo
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">Gemini phân tích dữ liệu K-means, video & hành vi SP → gợi ý kênh QC, lịch xoay tuần, ngân sách</p>
+          </div>
+          <button onclick="generateAdStrategy()" class="bg-gradient-to-r from-rose-500 to-pink-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg whitespace-nowrap">
+            <i class="fas fa-magic mr-2"></i> Tạo đề xuất AI
+          </button>
+        </div>
+        <div id="dm-ad-strategy" class="text-sm text-gray-600">
+          <p class="text-center py-8 text-gray-400">
+            <i class="fas fa-robot text-3xl mb-3 block text-rose-300"></i>
+            Sau khi có dữ liệu người dùng (demo hoặc thực), nhấn <strong>"AI đề xuất QC"</strong> để nhận chiến lược quảng cáo.
+          </p>
+        </div>
+      </div>
+
+      <!-- BẢN ĐỒ NHIỆT & ĐỘ CUỘN TRANG (HEATMAP & SCROLL ANALYSIS) -->
+      <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-purple-100">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-gray-100 pb-4">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800">
+              <i class="fas fa-fire-alt text-orange-500 mr-2"></i>Bản đồ tương tác (Heatmap) & Cuộn trang (Scroll Depth)
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">Trực quan hóa vị trí click chuột của khách hàng và độ cuộn xem trang</p>
+          </div>
+          <div class="flex gap-2">
+            <select id="heatmap-page-select" onchange="renderHeatmap()" class="px-4 py-2 border rounded-xl text-sm min-w-[150px] bg-white">
+              <option value="index" selected>Trang chủ (index)</option>
+              <option value="sanpham">Trang danh sách (sanpham)</option>
+              <option value="chitietsp">Chi tiết SP (chitietsp)</option>
+            </select>
+            <button onclick="loadHeatmapData()" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-100">
+              <i class="fas fa-sync"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Heatmap Canvas Visualization -->
+          <div class="lg:col-span-7 flex flex-col items-center">
+            <h4 class="font-bold text-gray-700 mb-3 text-sm self-start"><i class="fas fa-image mr-1"></i>Trực quan hóa Click Heatmap (Bản đồ Click)</h4>
+            <div class="relative w-full max-w-[600px] border border-gray-200 rounded-xl overflow-hidden shadow-inner bg-gray-50 flex items-center justify-center" style="height: 380px;">
+              <canvas id="heatmap-canvas" width="600" height="380" class="absolute inset-0 z-10 w-full h-full pointer-events-none"></canvas>
+              <div id="heatmap-wireframe" class="w-full h-full p-4 flex flex-col justify-between text-xs text-gray-400 select-none z-0 opacity-40">
+                <!-- Sẽ được điền động bằng javascript -->
+              </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-2"><i class="fas fa-info-circle mr-1"></i>Các chấm màu đỏ/cam/vàng thể hiện mức độ click chuột nhiều của người dùng tại các vị trí.</p>
+          </div>
+
+          <!-- Tables Analysis -->
+          <div class="lg:col-span-5 space-y-6">
+            <!-- Scroll Depth Report -->
+            <div>
+              <h4 class="font-bold text-gray-700 mb-3 text-sm"><i class="fas fa-arrows-alt-v mr-1"></i>Độ cuộn trang (Scroll Depth)</h4>
+              <div class="overflow-x-auto border border-gray-100 rounded-xl">
+                <table class="w-full text-sm">
+                  <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-100">
+                    <tr>
+                      <th class="p-3 text-left">Trang</th>
+                      <th class="p-3 text-center">Độ cuộn trung bình</th>
+                      <th class="p-3 text-center">Tỷ lệ xem hết (100%)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="scroll-stats-tbody" class="divide-y divide-gray-100 text-gray-700">
+                    <tr><td colspan="3" class="p-4 text-center text-gray-400">Đang tải dữ liệu...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Top Interactive Selectors -->
+            <div>
+              <h4 class="font-bold text-gray-700 mb-3 text-sm"><i class="fas fa-hand-pointer mr-1"></i>Top phần tử được click nhiều nhất</h4>
+              <div class="overflow-x-auto border border-gray-100 rounded-xl">
+                <table class="w-full text-sm">
+                  <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-100">
+                    <tr>
+                      <th class="p-3 text-left">Phần tử (Selector/Text)</th>
+                      <th class="p-3 text-center">Lượt click</th>
+                    </tr>
+                  </thead>
+                  <tbody id="selector-stats-tbody" class="divide-y divide-gray-100 text-gray-700">
+                    <tr><td colspan="2" class="p-4 text-center text-gray-400">Đang tải dữ liệu...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HÀNH VI TỪNG TÀI KHOẢN -->
+      <div class="bg-white rounded-2xl shadow-xl p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800"><i class="fas fa-user-clock text-indigo-500 mr-2"></i>Hành vi từng tài khoản</h3>
+            <p class="text-sm text-gray-500 mt-1">Video xem · Thời gian xem SP · Upload file</p>
+          </div>
+          <select id="dm-user-filter" onchange="filterUserBehavior()" class="px-4 py-2 border rounded-xl text-sm min-w-[220px]">
+            <option value="">Tất cả tài khoản</option>
+          </select>
+        </div>
+        <div id="dm-users-behavior" class="space-y-4">
+          <p class="text-gray-400 text-center py-8">Đang tải hành vi người dùng...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT MODAL -->
+  <div id="product-modal" class="admin-modal hidden" onclick="if(event.target===this) closeProductModal()">
+    <div class="admin-modal-panel" onclick="event.stopPropagation()">
+      <div class="admin-modal-header flex justify-between items-center">
+        <h3 id="product-modal-title" class="text-xl md:text-2xl font-bold text-gray-800">Thêm sản phẩm mới</h3>
+        <button type="button" onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600 p-2">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <form id="product-form">
+        <input type="hidden" id="edit-product-id">
+        <div class="admin-modal-body">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <input type="text" id="product-name" placeholder="Tên sản phẩm" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500" required>
+          <input type="number" id="product-price" placeholder="Giá bán" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500" required>
+          <input type="number" id="product-original-price" placeholder="Giá gốc" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500">
+          <input type="number" id="product-discount" placeholder="Giảm giá %" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500" min="0" max="100">
+          <select id="product-category" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500" required>
+            <option value="">Chọn danh mục</option>
+            <option value="áo khoác">Áo khoác</option>
+            <option value="áo nỉ">Áo nỉ</option>
+            <option value="áo polo">Áo polo</option>
+            <option value="áo len">Áo len</option>
+            <option value="áo blazer">Áo blazer</option>
+            <option value="áo somi">Áo sơ mi</option>
+            <option value="quần jeans">Quần jeans</option>
+            <option value="quan dai kaki">Quần kaki</option>
+            <option value="phụ kiện">Phụ kiện</option>
+          </select>
+          <input type="text" id="product-size" placeholder="Size (S,M,L,XL)" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500" value="S,M,L,XL">
+          <input type="text" id="product-color" placeholder="Màu (Đen,Xám,Trắng)" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500" value="Đen,Xám">
+          <input type="number" id="product-stock" placeholder="Tồn kho" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500" value="100" required>
+          <div class="md:col-span-2 upload-zone border-2 border-dashed border-indigo-300 rounded-xl p-5 bg-indigo-50/60">
+            <h4 class="font-semibold text-gray-800 mb-3"><i class="fas fa-photo-video text-indigo-500 mr-2"></i>Ảnh &amp; Video sản phẩm</h4>
+            <div class="flex flex-wrap gap-3 mb-3">
+              <button type="button" class="upload-btn upload-btn-image" onclick="document.getElementById('product-images-file').click()">
+                <i class="fas fa-upload"></i> Chọn ảnh
+              </button>
+              <button type="button" class="upload-btn upload-btn-video" onclick="document.getElementById('product-video-file').click()">
+                <i class="fas fa-film"></i> Chọn video
+              </button>
+            </div>
+            <input type="file" id="product-images-file" accept="image/*" multiple style="display:none">
+            <input type="file" id="product-video-file" accept="video/mp4,video/webm,video/*" style="display:none">
+            <p class="text-xs text-gray-500">Ảnh: JPG, PNG, WEBP (nhiều file) · Video: MP4, WEBM — tối đa 100MB</p>
+            <div id="product-images-preview" class="flex flex-wrap gap-3 mt-4"></div>
+            <div id="product-video-preview" class="mt-4"></div>
+            <input type="hidden" id="product-image">
+            <input type="hidden" id="product-preview-images">
+            <input type="hidden" id="product-video-url">
+          </div>
+          <textarea id="product-description" placeholder="Mô tả sản phẩm" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 md:col-span-2 h-32"></textarea>
+        </div>
+        </div>
+        <div class="admin-modal-footer flex gap-4">
+          <button type="submit" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-red-500/25">
+            <i class="fas fa-save mr-2"></i> Lưu sản phẩm
+          </button>
+          <button type="button" onclick="closeProductModal()" class="flex-1 bg-gray-500 text-white py-3 rounded-xl font-bold hover:bg-gray-600">
+            <i class="fas fa-times mr-2"></i> Hủy
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PROMO MODAL -->
+  <div id="promo-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-8 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-8">
+        <h3 id="promo-modal-title" class="text-2xl font-bold text-gray-800">Tạo mã giảm giá mới</h3>
+        <button onclick="closePromoModal()" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <form id="promo-form">
+        <input type="hidden" id="edit-promo-id">
+        <div class="space-y-6">
+          <input type="text" id="promo-code" placeholder="Mã giảm giá (Shop50)" class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500" required>
+          <div class="grid grid-cols-2 gap-6">
+            <input type="number" id="promo-discount" placeholder="Giảm (%)" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500" min="1" max="100" required>
+            <input type="number" id="promo-min-order" placeholder="Đơn tối thiểu" class="p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500">
+          </div>
+          <select id="promo-type" class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500" required>
+            <option value="">Loại giảm giá</option>
+            <option value="percentage">Giảm %</option>
+            <option value="fixed">Giảm cố định</option>
+            <option value="product">Theo sản phẩm</option>
+          </select>
+          <input type="date" id="promo-expiry" class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500" required>
+          <select id="promo-status" class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500">
+            <option value="active">Hoạt động</option>
+            <option value="inactive">Tắt</option>
+          </select>
+        </div>
+        <div class="flex gap-4 mt-8">
+          <button type="submit" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold shadow-lg">
+            <i class="fas fa-save mr-2"></i> Tạo mã
+          </button>
+          <button type="button" onclick="closePromoModal()" class="flex-1 bg-gray-500 text-white py-4 rounded-xl font-bold">
+            <i class="fas fa-times mr-2"></i> Hủy
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+   // === URL CỦA BACKEND ===
+    const API_URL = "http://localhost:5281/api";
+    const MEDIA_BASE = "http://localhost:5281";
+    let productImageUrls = [];
+    let productVideoUrl = '';
+    const ADMIN_EMAIL = 'admin@shop.com';
+    const ADMIN_PASS = 'admin123';
+
+    function esc(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    window.onerror = function(msg, url, line) {
+      console.error('Admin error:', msg, line);
+      const box = document.getElementById('js-error-banner');
+      if (box) {
+        box.classList.remove('hidden');
+        box.textContent = 'Lỗi JS dòng ' + line + ': ' + msg;
+      }
+      return false;
+    };
+
+    if (window.location.protocol === 'file:') {
+      const box = document.getElementById('js-error-banner');
+      if (box) {
+        box.classList.remove('hidden');
+        box.textContent = 'Trang không chạy được qua file://. Hãy dùng Live Server (chuột phải admin.html → Open with Live Server) hoặc F5 với cấu hình "Admin Dashboard".';
+      }
+    }
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('jwtToken') || localStorage.getItem('token') || '';
+      return token ? { 'Authorization': `Bearer ${token}` } : {};
+    }
+
+    async function ensureAdminAccount() {
+      try {
+        await fetch(`${API_URL}/seed/admin`, { method: 'POST' });
+      } catch (e) {
+        console.warn('Không tạo được admin API:', e.message);
+      }
+    }
+
+    async function loginWithApi() {
+      await ensureAdminAccount();
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: ADMIN_EMAIL, password: ADMIN_PASS })
+      });
+      if (!res.ok) throw new Error('Không đăng nhập được API admin');
+      const data = await res.json();
+      localStorage.setItem('jwtToken', data.token);
+      localStorage.setItem('token', data.token);
+      if (data.user) localStorage.setItem('userInfo', JSON.stringify(data.user));
+      return data;
+    }
+
+    // === LOGIN ===
+    async function login() {
+      const pass = document.getElementById('admin-pass').value;
+      if (pass !== ADMIN_PASS) {
+        alert('❌ Mật khẩu sai!');
+        return;
+      }
+      try {
+        await loginWithApi();
+      } catch (err) {
+        alert('⚠️ Backend chưa chạy hoặc lỗi API.\nHãy chạy: cd ThuanBackend/Thuan.API && dotnet run\n\nChỉ xem được tab Sản phẩm & Data Mining (không cần token).');
+      }
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('tab-products').classList.remove('hidden');
+      loadAllData();
+      setActiveNav('products');
+    }
+
+    function logout() {
+      document.getElementById('login-form').classList.remove('hidden');
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      document.getElementById('admin-pass').value = '';
+    }
+
+    // === LOAD DỮ LIỆU BAN ĐẦU ===
+    function loadAllData() {
+      renderProducts(); // Tải sản phẩm
+      renderOrders();   // Tải đơn hàng
+      renderUsers();    // Tải người dùng
+    }
+
+    // === PRODUCTS ===
+    // Hàm TẢI VÀ VẼ sản phẩm (dùng API)
+    async function renderProducts() {
+      const tbody = document.getElementById('product-table-body');
+      tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center">Đang tải...</td></tr>'; // Thông báo đang tải
+
+      try {
+        const response = await fetch(`${API_URL}/products`);
+        if (!response.ok) throw new Error('Lỗi khi tải sản phẩm');
+        const productsData = await response.json();
+        const products = Array.isArray(productsData) ? productsData : (productsData.data || []);
+
+        if (products.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center empty-state">Chưa có sản phẩm nào. Hãy thêm sản phẩm mới.</td></tr>';
+            return;
+        }
+
+        // Dùng data từ API để vẽ
+        tbody.innerHTML = products.map(p => `
+          <tr class="hover:bg-gray-50/50">
+            <td class="p-6">
+              <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover">
+            </td>
+            <td class="p-6 font-medium text-gray-900">${esc(p.name)}</td>
+            <td class="p-6">
+              <span class="font-bold text-red-600">${(p.price || 0).toLocaleString()}đ</span>
+              ${p.discount > 0 ? `<span class="ml-2 text-sm text-gray-500 line-through">${(p.originalPrice || 0).toLocaleString()}đ</span>` : ''}
+            </td>
+            <td class="p-6">
+              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">${p.category}</span>
+            </td>
+            <td class="p-6">
+              <span class="px-3 py-1 ${p.stock > 10 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} rounded-full text-sm font-medium">${p.stock}</span>
+            </td>
+            <td class="p-6">
+              <button onclick="editProduct(${p.id})" class="text-blue-600 hover:text-blue-800 mr-3">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteProduct(${p.id})" class="text-red-600 hover:text-red-800">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error(error);
+        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-red-500">Lỗi: ${error.message}. Hãy chắc chắn backend (F5) đang chạy.</td></tr>`;
+      }
+    }
+
+    // Hàm mở form (Thêm mới)
+    function resetProductMedia() {
+      productImageUrls = [];
+      productVideoUrl = '';
+      document.getElementById('product-image').value = '';
+      document.getElementById('product-preview-images').value = '';
+      document.getElementById('product-video-url').value = '';
+      document.getElementById('product-images-preview').innerHTML = '';
+      document.getElementById('product-video-preview').innerHTML = '';
+      const imgFile = document.getElementById('product-images-file');
+      const vidFile = document.getElementById('product-video-file');
+      if (imgFile) imgFile.value = '';
+      if (vidFile) vidFile.value = '';
+    }
+
+    function renderProductMediaPreview() {
+      const imgBox = document.getElementById('product-images-preview');
+      imgBox.innerHTML = productImageUrls.map((url, i) =>
+        '<div class="relative group">' +
+        '<img src="' + esc(url) + '" class="w-20 h-20 object-cover rounded-lg border shadow">' +
+        '<button type="button" onclick="removeProductImage(' + i + ')" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 text-xs opacity-90">×</button>' +
+        (i === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-indigo-600 text-white text-[10px] text-center rounded-b-lg">Ảnh chính</span>' : '') +
+        '</div>'
+      ).join('');
+
+      const vidBox = document.getElementById('product-video-preview');
+      if (productVideoUrl) {
+        vidBox.innerHTML = '<video src="' + esc(productVideoUrl) + '" controls class="max-h-40 rounded-lg border w-full"></video>' +
+          '<button type="button" onclick="removeProductVideo()" class="mt-2 text-xs text-red-600 hover:underline">Xóa video</button>';
+      } else {
+        vidBox.innerHTML = '';
+      }
+
+      document.getElementById('product-image').value = productImageUrls[0] || '';
+      document.getElementById('product-preview-images').value = productImageUrls.join(',');
+      document.getElementById('product-video-url').value = productVideoUrl;
+    }
+
+    function removeProductImage(index) {
+      productImageUrls.splice(index, 1);
+      renderProductMediaPreview();
+    }
+
+    function removeProductVideo() {
+      productVideoUrl = '';
+      document.getElementById('product-video-file').value = '';
+      renderProductMediaPreview();
+    }
+
+    async function uploadProductFiles(files, description) {
+      const fd = new FormData();
+      for (const f of files) fd.append('files', f);
+      fd.append('description', description || 'product-media');
+      const res = await fetch(API_URL + '/upload/multiple', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Upload thất bại');
+      return (data.data || []).map(f => f.publicUrl || (MEDIA_BASE + f.fileUrl));
+    }
+
+    function openProductModal() {
+      document.getElementById('product-modal-title').textContent = 'Thêm sản phẩm mới';
+      document.getElementById('product-form').reset();
+      document.getElementById('edit-product-id').value = '';
+      resetProductMedia();
+      document.body.classList.add('modal-open');
+      const modal = document.getElementById('product-modal');
+      modal.classList.remove('hidden');
+      modal.scrollTop = 0;
+    }
+
+    function closeProductModal() {
+      document.getElementById('product-modal').classList.add('hidden');
+      if (document.getElementById('promo-modal')?.classList.contains('hidden')) {
+        document.body.classList.remove('modal-open');
+      }
+    }
+
+    // === (MỚI) HÀM SỬA ===
+    async function editProduct(id) {
+        // 1. Lấy data sản phẩm từ API
+        const response = await fetch(`${API_URL}/products/${id}`);
+        if (!response.ok) {
+            alert('Lỗi: Không tìm thấy sản phẩm.');
+            return;
+        }
+        const p = await response.json();
+        
+        // 2. Điền data vào form
+        document.getElementById('product-modal-title').textContent = 'Sửa sản phẩm';
+        document.getElementById('edit-product-id').value = p.id; // ĐẶT ID VÀO
+        document.getElementById('product-name').value = p.name;
+        document.getElementById('product-price').value = p.price;
+        document.getElementById('product-original-price').value = p.originalPrice;
+        document.getElementById('product-discount').value = p.discount;
+        document.getElementById('product-category').value = p.category;
+        document.getElementById('product-size').value = p.size; // Nó là chuỗi "M,L,XL"
+        document.getElementById('product-color').value = p.color; // Nó là chuỗi "Đen,Trắng"
+        document.getElementById('product-stock').value = p.stock;
+        productImageUrls = [];
+        if (p.previewImages) {
+          productImageUrls = p.previewImages.split(',').map(s => s.trim()).filter(Boolean);
+        } else if (p.image) {
+          productImageUrls = [p.image];
+        }
+        productVideoUrl = p.videoUrl || '';
+        renderProductMediaPreview();
+        document.getElementById('product-description').value = p.description;
+        
+        // 3. Mở form (modal)
+        document.body.classList.add('modal-open');
+        document.getElementById('product-modal').classList.remove('hidden');
+    }
+
+    // === (MỚI) HÀM XÓA ===
+    async function deleteProduct(id) {
+        // 1. Hỏi xác nhận
+        if (!confirm('Bạn có chắc muốn xóa sản phẩm này? (Không thể hoàn tác)')) {
+            return; // Hủy nếu người dùng nhấn Cancel
+        }
+
+        // 2. Gọi API DELETE
+        try {
+            const response = await fetch(`${API_URL}/products/${id}`, {
+                method: 'DELETE',
+            });
+            
+            if (response.ok) {
+                alert('✅ Đã xóa sản phẩm thành công!');
+                renderProducts(); // Tải lại danh sách
+            } else {
+                alert('❌ Lỗi khi xóa sản phẩm! (Kiểm tra console)');
+                console.error(await response.text());
+            }
+        } catch (error) {
+            alert('❌ Lỗi kết nối. Hãy chắc chắn backend đang chạy!');
+            console.error(error);
+        }
+    }
+
+    // === HÀM SUBMIT FORM (Đã hoàn thiện Cả SỬA và THÊM) ===
+    const productFormEl = document.getElementById('product-form');
+    if (!productFormEl) {
+      console.error('Không tìm thấy #product-form');
+    } else productFormEl.onsubmit = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-product-id').value;
+      const submitBtn = productFormEl.querySelector('button[type="submit"]');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang lưu...'; }
+
+      try {
+        const imgFiles = document.getElementById('product-images-file').files;
+        const vidFile = document.getElementById('product-video-file').files[0];
+        if (imgFiles && imgFiles.length) {
+          const urls = await uploadProductFiles(Array.from(imgFiles), 'product-images');
+          productImageUrls = productImageUrls.concat(urls);
+        }
+        if (vidFile) {
+          const urls = await uploadProductFiles([vidFile], 'product-video');
+          if (urls[0]) productVideoUrl = urls[0];
+        }
+        renderProductMediaPreview();
+
+        if (!productImageUrls.length) {
+          alert('Vui lòng upload ít nhất 1 ảnh sản phẩm.');
+          return;
+        }
+
+        const productData = {
+          id: id ? parseInt(id) : 0,
+          name: document.getElementById('product-name').value,
+          price: parseInt(document.getElementById('product-price').value),
+          originalPrice: parseInt(document.getElementById('product-original-price').value) || 0,
+          discount: parseInt(document.getElementById('product-discount').value) || 0,
+          category: document.getElementById('product-category').value,
+          size: document.getElementById('product-size').value,
+          color: document.getElementById('product-color').value,
+          stock: parseInt(document.getElementById('product-stock').value),
+          image: productImageUrls[0],
+          description: document.getElementById('product-description').value,
+          previewImages: productImageUrls.join(','),
+          videoUrl: productVideoUrl || ''
+        };
+
+        const url = id ? `${API_URL}/products/${id}` : `${API_URL}/products`;
+        const method = id ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(productData),
+        });
+
+        if (response.ok) {
+          alert(id ? '✅ Đã cập nhật sản phẩm!' : '✅ Đã thêm sản phẩm mới!');
+          closeProductModal();
+          renderProducts();
+        } else {
+          const errText = await response.text();
+          alert(id ? '❌ Lỗi khi cập nhật!' : '❌ Lỗi khi thêm sản phẩm!');
+          console.error(errText);
+        }
+      } catch (error) {
+        alert('❌ Lỗi: ' + (error.message || error) + '\nHãy chạy: cd ThuanBackend/Thuan.API && dotnet run');
+        console.error(error);
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Lưu sản phẩm'; }
+      }
+    };
+
+    function setActiveNav(tabName) {
+      document.querySelectorAll('.nav-link').forEach(l => {
+        l.classList.toggle('active', l.dataset.tab === tabName);
+      });
+    }
+
+    // === NAVIGATION ===
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        setActiveNav(this.dataset.tab);
+
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+        const tabEl = document.getElementById('tab-' + this.dataset.tab);
+        if (!tabEl) { console.warn('Tab không tồn tại:', this.dataset.tab); return; }
+        tabEl.classList.remove('hidden');
+        
+        if(this.dataset.tab === 'products') renderProducts();
+        if(this.dataset.tab === 'orders') renderOrders();
+        if(this.dataset.tab === 'users') renderUsers();
+        if(this.dataset.tab === 'datamining') setTimeout(() => loadDataMiningDashboard(), 100);
+      });
+    });
+
+    // Mobile menu (Giữ nguyên)
+    document.getElementById('mobile-menu').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('overlay').classList.remove('hidden');
+    });
+
+    document.getElementById('overlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.add('hidden');
+    });
+
+    // Enter để login (Giữ nguyên)
+    document.getElementById('admin-pass').addEventListener('keypress', e => {
+      if (e.key === 'Enter') login();
+    });
+
+    document.getElementById('product-images-file')?.addEventListener('change', function() {
+      const box = document.getElementById('product-images-preview');
+      if (!this.files.length) return;
+      Array.from(this.files).forEach(file => {
+        const url = URL.createObjectURL(file);
+        const wrap = document.createElement('div');
+        wrap.className = 'relative';
+        wrap.innerHTML = '<img src="' + url + '" class="w-20 h-20 object-cover rounded-lg border-2 border-indigo-300 shadow"><span class="absolute bottom-0 left-0 right-0 bg-indigo-600 text-white text-[9px] text-center rounded-b-lg truncate px-1">' + esc(file.name) + '</span>';
+        box.appendChild(wrap);
+      });
+    });
+
+    document.getElementById('product-video-file')?.addEventListener('change', function() {
+      const box = document.getElementById('product-video-preview');
+      if (!this.files[0]) return;
+      const url = URL.createObjectURL(this.files[0]);
+      box.innerHTML = '<video src="' + url + '" controls class="max-h-48 rounded-lg border w-full"></video><p class="text-xs text-gray-500 mt-1">' + esc(this.files[0].name) + ' (sẽ upload khi Lưu)</p>';
+    });
+
+    // Functions phụ (Giữ nguyên)
+    function exportProducts() {
+      alert('📥 Đang xuất Excel... (Tính năng sắp có)');
+    }
+
+    // === PROMOTIONS (stub - tránh lỗi ReferenceError) ===
+    function openPromoModal() {
+      document.getElementById('promo-form').reset();
+      document.getElementById('edit-promo-id').value = '';
+      document.getElementById('promo-modal').classList.remove('hidden');
+    }
+    function closePromoModal() {
+      document.getElementById('promo-modal').classList.add('hidden');
+    }
+    document.getElementById('promo-form')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Tính năng khuyến mãi đang phát triển. Dùng tab Data Mining để xem thống kê.');
+      closePromoModal();
+    });
+
+    // Kiểm tra backend khi mở trang
+    (async function checkBackend() {
+      try {
+        const res = await fetch(`${API_URL}/products`, { method: 'GET' });
+        if (!res.ok) throw new Error('API lỗi');
+      } catch {
+        const loginForm = document.getElementById('login-form');
+        if (loginForm && !document.getElementById('backend-warn')) {
+          const warn = document.createElement('p');
+          warn.id = 'backend-warn';
+          warn.className = 'text-center text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4';
+          warn.innerHTML = '⚠️ <strong>Backend chưa chạy.</strong> Mở terminal: <code>cd ThuanBackend/Thuan.API</code> rồi <code>dotnet run</code>';
+          loginForm.appendChild(warn);
+        }
+      }
+    })();
+
+    // === ORDERS ===
+    async function renderOrders() {
+      const tbody = document.getElementById('order-table-body');
+      tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center">Đang tải...</td></tr>';
+
+      try {
+        const response = await fetch(`${API_URL}/order/all`, {
+          headers: { ...getAuthHeaders() }
+        });
+        
+        if (!response.ok) {
+          const hint = response.status === 401 ? 'Cần đăng nhập lại (JWT admin). Nhấn Đăng xuất rồi đăng nhập lại.' : 'Không thể tải đơn hàng';
+          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-red-500">Lỗi ${response.status}: ${hint}</td></tr>`;
+          return;
+        }
+
+        const data = await response.json();
+        const orders = data.data || [];
+
+        if (orders.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center empty-state">Chưa có đơn hàng nào</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = orders.map(order => `
+          <tr class="hover:bg-gray-50/50">
+            <td class="p-6">#${order.id}</td>
+            <td class="p-6">${order.userId}</td>
+            <td class="p-6">${order.items?.length || 0} sản phẩm</td>
+            <td class="p-6 font-bold">${(order.totalAmount || 0).toLocaleString()}đ</td>
+            <td class="p-6">
+              <select class="px-3 py-1 rounded border border-gray-300" onchange="updateOrderStatus(${order.id}, this.value)">
+                <option value="Pending" ${order.orderStatus === 'Pending' ? 'selected' : ''}>Chờ xử lý</option>
+                <option value="Processing" ${order.orderStatus === 'Processing' ? 'selected' : ''}>Đang xử lý</option>
+                <option value="Shipped" ${order.orderStatus === 'Shipped' ? 'selected' : ''}>Đã gửi</option>
+                <option value="Delivered" ${order.orderStatus === 'Delivered' ? 'selected' : ''}>Đã giao</option>
+                <option value="Cancelled" ${order.orderStatus === 'Cancelled' ? 'selected' : ''}>Hủy</option>
+              </select>
+            </td>
+            <td class="p-6">
+              <button onclick="deleteOrder(${order.id})" class="text-red-600 hover:text-red-800">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error(error);
+        tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-red-500">Lỗi: ' + error.message + '</td></tr>';
+      }
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        const response = await fetch(`${API_URL}/order/${orderId}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify({ newStatus })
+        });
+
+        if (response.ok) {
+          alert('✅ Cập nhật trạng thái thành công!');
+          renderOrders();
+        } else {
+          alert('❌ Lỗi cập nhật trạng thái');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Lỗi: ' + error.message);
+      }
+    }
+
+    async function deleteOrder(orderId) {
+      if (!confirm('Bạn có chắc muốn xóa đơn hàng này?')) return;
+
+      try {
+        const response = await fetch(`${API_URL}/order/${orderId}`, {
+          method: 'DELETE',
+          headers: { ...getAuthHeaders() }
+        });
+
+        if (response.ok) {
+          alert('✅ Xóa đơn hàng thành công!');
+          renderOrders();
+        } else {
+          alert('❌ Lỗi xóa đơn hàng');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Lỗi: ' + error.message);
+      }
+    }
+
+    // === USERS ===
+    async function renderUsers() {
+      const tbody = document.getElementById('user-table-body');
+      tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center">Đang tải...</td></tr>';
+
+      try {
+        const response = await fetch(`${API_URL}/users`, {
+          headers: { ...getAuthHeaders() }
+        });
+        
+        if (!response.ok) {
+          const hint = response.status === 401 ? 'Chưa có JWT admin. Đăng xuất → đăng nhập lại sau khi backend chạy.' : 'Không thể tải người dùng';
+          tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-red-500">Lỗi ${response.status}: ${hint}</td></tr>`;
+          return;
+        }
+
+        const data = await response.json();
+        const users = data.data || [];
+
+        if (users.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center empty-state">Chưa có người dùng nào</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = users.map(user => `
+          <tr class="hover:bg-gray-50/50">
+            <td class="p-6">${user.email}</td>
+            <td class="p-6">${user.name}</td>
+            <td class="p-6">
+              <select class="px-3 py-1 rounded border border-gray-300" onchange="changeUserRole(${user.id}, this.value)">
+                <option value="user" ${user.role === 'user' ? 'selected' : ''}>Người dùng</option>
+                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+              </select>
+            </td>
+            <td class="p-6">
+              <span class="px-3 py-1 ${user.role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'} rounded-full text-sm font-medium">${user.role}</span>
+            </td>
+            <td class="p-6">
+              <button onclick="deleteUser(${user.id})" class="text-red-600 hover:text-red-800">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error(error);
+        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-red-500">Lỗi: ' + error.message + '</td></tr>';
+      }
+    }
+
+    async function changeUserRole(userId, newRole) {
+      try {
+        const response = await fetch(`${API_URL}/users/${userId}/role`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify({ newRole })
+        });
+
+        if (response.ok) {
+          alert('✅ Thay đổi vai trò thành công!');
+          renderUsers();
+        } else {
+          alert('❌ Lỗi thay đổi vai trò');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Lỗi: ' + error.message);
+      }
+    }
+
+    async function deleteUser(userId) {
+      if (!confirm('Bạn có chắc muốn xóa người dùng này?')) return;
+
+      try {
+        const response = await fetch(`${API_URL}/users/${userId}`, {
+          method: 'DELETE',
+          headers: { ...getAuthHeaders() }
+        });
+
+        if (response.ok) {
+          alert('✅ Xóa người dùng thành công!');
+          renderUsers();
+        } else {
+          alert('❌ Lỗi xóa người dùng');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Lỗi: ' + error.message);
+      }
+    }
+
+    // === DATA MINING DASHBOARD ===
+    let dmEventChart = null;
+    let dmClusterChart = null;
+    let dmUsersBehaviorData = [];
+    let allBehaviorsData = [];
+
+    function showDmStatus(msg, type = 'info') {
+      const el = document.getElementById('dm-status');
+      if (!el) return;
+      const colors = { info: 'bg-blue-50 text-blue-700', success: 'bg-emerald-50 text-emerald-700', error: 'bg-red-50 text-red-700' };
+      el.className = 'mb-4 p-4 rounded-xl text-sm ' + (colors[type] || colors.info);
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    async function seedDemoData() {
+      if (!confirm('Tạo 6 tài khoản demo + dữ liệu hành vi mẫu?\nMật khẩu: demo123')) return;
+      showDmStatus('Đang tạo dữ liệu demo...', 'info');
+      try {
+        const res = await fetch(`${API_URL}/seed/demo`, { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Lỗi');
+        showDmStatus(`Đã tạo xong! ${data.totalUsersWithBehavior} users có dữ liệu. Mật khẩu demo: demo123`, 'success');
+        await loadDataMiningDashboard();
+        await runKMeans();
+      } catch (err) {
+        showDmStatus('Lỗi: ' + err.message, 'error');
+      }
+    }
+
+    async function loadDataMiningDashboard() {
+      showDmStatus('Đang tải dữ liệu từ backend...', 'info');
+      try {
+        const [eventStats, topProducts, topVideos, completion, interest, analysis, usersBehavior, allBehaviors] = await Promise.all([
+          fetch(`${API_URL}/userbehavior/event-stats`).then(r => r.json()),
+          fetch(`${API_URL}/userbehavior/top-products?limit=8`).then(r => r.json()),
+          fetch(`${API_URL}/videotracking/stats/top-videos?limit=8`).then(r => r.json()),
+          fetch(`${API_URL}/videotracking/stats/completion-rate`).then(r => r.json()),
+          fetch(`${API_URL}/videotracking/stats/interest`).then(r => r.json()),
+          fetch(`${API_URL}/datamining/analysis`).then(r => r.json()).catch(() => null),
+          fetch(`${API_URL}/datamining/users-behavior`).then(r => r.json()).catch(() => ({ data: [] })),
+          fetch(`${API_URL}/userbehavior`).then(r => r.json()).catch(() => ({ data: [] }))
+        ]);
+
+        const events = eventStats.data || [];
+        const totalEvents = events.reduce((s, e) => s + e.count, 0);
+        document.getElementById('dm-total-events').textContent = totalEvents.toLocaleString();
+        document.getElementById('dm-video-views').textContent = (completion.totalViews || 0).toLocaleString();
+        document.getElementById('dm-completion-rate').textContent = (completion.completionRate || 0) + '%';
+
+        renderEventChart(events);
+        renderTopProducts(topProducts.data || []);
+        renderTopVideos(topVideos.data || []);
+        renderInterest(interest.data || {});
+        dmUsersBehaviorData = usersBehavior.data || [];
+        populateUserFilter(dmUsersBehaviorData);
+        renderUsersBehavior(dmUsersBehaviorData);
+
+        allBehaviorsData = allBehaviors.data || [];
+        processHeatmapAndScrollData(allBehaviorsData);
+
+        if (analysis && analysis.userProfiles) {
+          document.getElementById('dm-cluster-count').textContent = analysis.totalClusters || analysis.userProfiles.length;
+          renderKMeansProfiles(analysis.userProfiles);
+          renderClusterChart(analysis.userProfiles);
+          showDmStatus('Dữ liệu đã cập nhật. K-means phân tích sẵn sàng.', 'success');
+        } else {
+          document.getElementById('dm-cluster-count').textContent = '—';
+          showDmStatus('Dữ liệu thống kê đã tải. Nhấn "Chạy K-means" khi có đủ dữ liệu người dùng.', 'info');
+        }
+      } catch (err) {
+        console.error(err);
+        showDmStatus('Lỗi kết nối backend. Hãy chạy: cd ThuanBackend/Thuan.API && dotnet run', 'error');
+      }
+    }
+
+    function processHeatmapAndScrollData(behaviors) {
+      allBehaviorsData = behaviors;
+      
+      // 1. Thống kê độ cuộn trang (Scroll Depth)
+      const scrollEvents = behaviors.filter(b => b.eventType === 'scroll' || b.eventType === 'exit_scroll');
+      const pageScrolls = {};
+
+      scrollEvents.forEach(b => {
+        const page = b.pageName || 'unknown';
+        if (page === 'unknown' || page === 'admin') return;
+        
+        let depth = 0;
+        const match = b.eventData.match(/\d+/);
+        if (match) {
+          depth = parseInt(match[0]);
+        }
+
+        if (!pageScrolls[page]) {
+          pageScrolls[page] = { totalDepth: 0, count: 0, count100: 0 };
+        }
+        
+        pageScrolls[page].totalDepth += depth;
+        pageScrolls[page].count++;
+        if (depth === 100) {
+          pageScrolls[page].count100++;
+        }
+      });
+
+      const scrollTbody = document.getElementById('scroll-stats-tbody');
+      if (Object.keys(pageScrolls).length === 0) {
+        scrollTbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-400">Chưa có dữ liệu cuộn trang</td></tr>';
+      } else {
+        scrollTbody.innerHTML = Object.keys(pageScrolls).map(page => {
+          const stats = pageScrolls[page];
+          const avg = Math.round(stats.totalDepth / stats.count);
+          const rate100 = Math.round((stats.count100 / stats.count) * 100);
+          const pageTitle = page === 'index' ? 'Trang chủ' : (page === 'sanpham' ? 'Trang danh sách' : (page === 'chitietsp' ? 'Chi tiết SP' : page));
+          return `
+            <tr>
+              <td class="p-3 font-semibold">${pageTitle}</td>
+              <td class="p-3 text-center font-bold text-indigo-600">${avg}%</td>
+              <td class="p-3 text-center text-emerald-600 font-medium">${rate100}%</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // 2. Thống kê Top Selectors Clicked
+      const heatmapEvents = behaviors.filter(b => b.eventType === 'click_heatmap');
+      const selectorCounts = {};
+
+      heatmapEvents.forEach(b => {
+        let clickData = {};
+        try {
+          clickData = JSON.parse(b.eventData);
+        } catch (e) {
+          return;
+        }
+
+        const selector = clickData.selector || 'unknown';
+        const text = clickData.text || '';
+        const key = selector + (text ? ` ("${text}")` : '');
+
+        if (!selectorCounts[key]) {
+          selectorCounts[key] = { count: 0, text: text, selector: selector };
+        }
+        selectorCounts[key].count++;
+      });
+
+      const selectorTbody = document.getElementById('selector-stats-tbody');
+      const sortedSelectors = Object.keys(selectorCounts)
+        .map(key => ({ key, ...selectorCounts[key] }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 8);
+
+      if (sortedSelectors.length === 0) {
+        selectorTbody.innerHTML = '<tr><td colspan="2" class="p-4 text-center text-gray-400">Chưa có dữ liệu click heatmap</td></tr>';
+      } else {
+        selectorTbody.innerHTML = sortedSelectors.map(s => {
+          return `
+            <tr>
+              <td class="p-3 font-mono text-xs break-all">${esc(s.key)}</td>
+              <td class="p-3 text-center font-bold text-orange-600">${s.count}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // 3. Vẽ Heatmap Canvas
+      renderHeatmap();
+    }
+
+    function loadHeatmapData() {
+      fetch(`${API_URL}/userbehavior`)
+        .then(r => r.json())
+        .then(res => {
+          processHeatmapAndScrollData(res.data || []);
+        })
+        .catch(err => {
+          console.warn('Lỗi tải heatmap data:', err.message);
+        });
+    }
+
+    function renderHeatmap() {
+      const selectedPage = document.getElementById('heatmap-page-select').value;
+      const clicks = allBehaviorsData.filter(b => b.eventType === 'click_heatmap' && b.pageName === selectedPage);
+
+      const wireframeContainer = document.getElementById('heatmap-wireframe');
+      if (selectedPage === 'index') {
+        wireframeContainer.innerHTML = `
+          <div class="flex justify-between border-b border-gray-200 pb-2">
+            <span class="font-bold text-red-600">HT HOUSE Logo</span>
+            <span>Danh mục | Giỏ hàng | Đăng nhập</span>
+          </div>
+          <div class="my-4 border border-dashed border-gray-300 rounded p-4 text-center bg-white flex flex-col justify-center items-center h-24">
+            <span class="font-bold text-orange-500 text-sm">Banner Quảng cáo / Khuyến mại</span>
+            <span class="text-[10px]">Thời trang nam hè 2026 - Giảm 50%</span>
+          </div>
+          <div class="grid grid-cols-4 gap-2 my-2">
+            <div class="border border-gray-200 rounded p-1 text-center bg-white">Áo Polo</div>
+            <div class="border border-gray-200 rounded p-1 text-center bg-white">Áo Khoác</div>
+            <div class="border border-gray-200 rounded p-1 text-center bg-white">Quần Kaki</div>
+            <div class="border border-gray-200 rounded p-1 text-center bg-white">Phụ kiện</div>
+          </div>
+          <div class="border-t border-gray-200 pt-2 text-center text-[10px]">© 2026 HT House - Hệ thống bán hàng</div>
+        `;
+      } else if (selectedPage === 'sanpham') {
+        wireframeContainer.innerHTML = `
+          <div class="flex justify-between border-b border-gray-200 pb-2">
+            <span class="font-bold text-red-600">HT HOUSE</span>
+            <span>Tìm kiếm sản phẩm... [🔍]</span>
+          </div>
+          <div class="flex-1 my-3 flex gap-3">
+            <div class="w-1/4 border border-dashed border-gray-300 rounded p-2 flex flex-col gap-2">
+              <span class="font-bold">Lọc sản phẩm</span>
+              <span>• Áo khoác</span>
+              <span>• Áo nỉ</span>
+              <span>• Quần kaki</span>
+            </div>
+            <div class="flex-1 border border-dashed border-gray-300 rounded p-2 grid grid-cols-3 gap-2">
+              <div class="border border-gray-200 rounded p-1 text-center bg-white h-16 flex items-center justify-center">Áo gió 2 lớp</div>
+              <div class="border border-gray-200 rounded p-1 text-center bg-white h-16 flex items-center justify-center">Polo trơn</div>
+              <div class="border border-gray-200 rounded p-1 text-center bg-white h-16 flex items-center justify-center">Quần kaki</div>
+              <div class="border border-gray-200 rounded p-1 text-center bg-white h-16 flex items-center justify-center">Blazer Navy</div>
+              <div class="border border-gray-200 rounded p-1 text-center bg-white h-16 flex items-center justify-center">Sneaker nam</div>
+              <div class="border border-gray-200 rounded p-1 text-center bg-white h-16 flex items-center justify-center">Túi tote</div>
+            </div>
+          </div>
+          <div class="text-center text-[10px]">[ Trang 1 | Trang 2 ]</div>
+        `;
+      } else if (selectedPage === 'chitietsp') {
+        wireframeContainer.innerHTML = `
+          <div class="flex justify-between border-b border-gray-200 pb-2">
+            <span>&lt; Quay lại</span>
+            <span class="font-bold">Chi tiết sản phẩm</span>
+            <span>Giỏ hàng [🛒]</span>
+          </div>
+          <div class="flex-1 my-3 flex gap-4">
+            <div class="w-1/2 border border-dashed border-gray-300 rounded p-2 flex flex-col justify-between bg-white relative">
+              <div class="text-center font-bold text-blue-500 h-2/3 flex items-center justify-center">[Ảnh sản phẩm]</div>
+              <div class="border border-red-200 text-red-500 rounded p-1 text-center text-[9px] bg-red-50">[▶ Phát Video sản phẩm]</div>
+            </div>
+            <div class="flex-1 flex flex-col justify-between p-1">
+              <div>
+                <div class="font-bold text-gray-700">Tên sản phẩm áo...</div>
+                <div class="text-red-500 font-bold my-1 text-sm">399.000đ</div>
+                <div class="flex gap-1 my-1">
+                  <span class="border px-1 rounded">Size M</span>
+                  <span class="border px-1 rounded bg-gray-100">Size L</span>
+                </div>
+              </div>
+              <div class="space-y-1.5 mt-2">
+                <div class="border border-blue-500 text-blue-600 rounded p-1 text-center bg-blue-50 font-bold">[ Thêm vào giỏ hàng ]</div>
+                <div class="bg-red-500 text-white rounded p-1 text-center font-bold">[ Mua ngay ]</div>
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-gray-200 pt-1 text-center text-[9px]">[Đánh giá sản phẩm - ★★★★★]</div>
+        `;
+      }
+
+      const canvas = document.getElementById('heatmap-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      clicks.forEach(click => {
+        let clickData = {};
+        try {
+          clickData = JSON.parse(click.eventData);
+        } catch (e) {
+          return;
+        }
+
+        const w = clickData.width || 1200;
+        const h = clickData.height || 800;
+
+        const x = (clickData.x / w) * canvas.width;
+        const y = (clickData.y / h) * canvas.height;
+
+        const radius = 18;
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        grad.addColorStop(0, 'rgba(239, 68, 68, 0.9)'); 
+        grad.addColorStop(0.3, 'rgba(249, 115, 22, 0.6)'); 
+        grad.addColorStop(0.6, 'rgba(234, 179, 8, 0.3)'); 
+        grad.addColorStop(1, 'rgba(234, 179, 8, 0)'); 
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    async function runKMeans() {
+      const k = parseInt(document.getElementById('kmeans-k').value) || 3;
+      showDmStatus(`Đang chạy K-means với K=${k}...`, 'info');
+      try {
+        const res = await fetch(`${API_URL}/datamining/kmeans`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ k })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Lỗi K-means');
+
+        document.getElementById('dm-cluster-count').textContent = data.k;
+        renderKMeansProfiles(data.userProfiles || []);
+        renderClusterChart(data.userProfiles || []);
+        showDmStatus(`K-means hoàn tất! Phân ${data.clusterCount || k} nhóm khách hàng.`, 'success');
+      } catch (err) {
+        showDmStatus('K-means lỗi: ' + err.message + ' (Cần >= ' + k + ' users có dữ liệu hành vi)', 'error');
+      }
+    }
+
+    async function generateAdStrategy() {
+      const btn = document.getElementById('btn-ad-strategy');
+      const el = document.getElementById('dm-ad-strategy');
+      if (!el) return;
+
+      showDmStatus('AI Gemini đang phân tích dữ liệu & tạo chiến lược quảng cáo...', 'info');
+      if (btn) { btn.disabled = true; btn.classList.add('opacity-60'); }
+      el.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-rose-400 mb-3"></i><p>Đang gọi Gemini AI...</p></div>';
+
+      try {
+        const res = await fetch(`${API_URL}/datamining/ad-strategy`, { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Lỗi AI');
+
+        renderAdStrategy(data.strategy || data, data.source);
+        const srcMsg = data.source === 'gemini'
+          ? 'Gemini AI đã tạo chiến lược quảng cáo!'
+          : 'Đề xuất chiến lược (local) — Gemini quota hết hoặc lỗi API';
+        showDmStatus(srcMsg, data.source === 'gemini' ? 'success' : 'info');
+      } catch (err) {
+        el.innerHTML = '<p class="text-red-500 text-center py-6">' + esc(err.message) + '</p>';
+        showDmStatus('Lỗi AI: ' + err.message, 'error');
+      } finally {
+        if (btn) { btn.disabled = false; btn.classList.remove('opacity-60'); }
+      }
+    }
+
+    function renderAdStrategy(s, source) {
+      const el = document.getElementById('dm-ad-strategy');
+      if (!el || !s) return;
+
+      let html = '';
+
+      if (source === 'local' || s.source === 'local') {
+        html += '<div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs">';
+        html += '<i class="fas fa-info-circle mr-1"></i> ' + esc(s.aiNote || 'Dùng phân tích local (Gemini không khả dụng)');
+        html += '</div>';
+      } else if (source === 'gemini') {
+        html += '<div class="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs">';
+        html += '<i class="fas fa-robot mr-1"></i> Đề xuất bởi Gemini AI';
+        html += '</div>';
+      }
+
+      if (s.summary) {
+        html += '<div class="bg-white rounded-xl p-5 mb-6 border border-rose-100 shadow-sm">';
+        html += '<h4 class="font-bold text-gray-800 mb-2"><i class="fas fa-lightbulb text-amber-500 mr-2"></i>Tóm tắt</h4>';
+        html += '<p class="text-gray-700 leading-relaxed">' + esc(s.summary) + '</p></div>';
+      }
+
+      if (s.channels && s.channels.length) {
+        html += '<h4 class="font-bold text-gray-800 mb-3"><i class="fas fa-share-alt text-blue-500 mr-2"></i>Kênh quảng cáo ưu tiên</h4>';
+        html += '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">';
+        s.channels.forEach(function(ch, i) {
+          html += '<div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">';
+          html += '<div class="flex items-center justify-between mb-2">';
+          html += '<span class="font-bold text-gray-800">#' + (ch.priority || (i + 1)) + ' ' + esc(ch.name) + '</span>';
+          html += '<span class="px-2 py-0.5 bg-rose-100 text-rose-700 rounded-full text-xs font-bold">' + (ch.budgetPercent || 0) + '%</span></div>';
+          html += '<p class="text-xs text-gray-500 mb-1"><i class="fas fa-film mr-1"></i>' + esc(ch.contentType || '') + ' · ' + esc(ch.adFormat || '') + '</p>';
+          html += '<p class="text-xs text-gray-600">' + esc(ch.reason || '') + '</p>';
+          if (ch.targetClusters && ch.targetClusters.length) {
+            html += '<div class="mt-2 flex flex-wrap gap-1">';
+            ch.targetClusters.forEach(function(c) {
+              html += '<span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[10px]">' + esc(c) + '</span>';
+            });
+            html += '</div>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      if (s.rotationPlan && s.rotationPlan.length) {
+        html += '<h4 class="font-bold text-gray-800 mb-3"><i class="fas fa-calendar-alt text-emerald-500 mr-2"></i>Lịch xoay kênh theo tuần</h4>';
+        html += '<div class="space-y-3 mb-6">';
+        s.rotationPlan.forEach(function(w) {
+          html += '<div class="bg-white rounded-xl p-4 border-l-4 border-emerald-400 shadow-sm">';
+          html += '<div class="font-bold text-gray-800 mb-1">Tuần ' + esc(String(w.week)) + ': ' + esc(w.focus || '') + '</div>';
+          html += '<p class="text-xs text-gray-500 mb-2">Kênh: <strong>' + esc((w.primaryChannels || []).join(', ')) + '</strong></p>';
+          if (w.promotedProducts && w.promotedProducts.length) {
+            html += '<p class="text-xs text-gray-600">SP: ' + esc(w.promotedProducts.join(', ')) + '</p>';
+          }
+          if (w.promotedVideos && w.promotedVideos.length) {
+            html += '<p class="text-xs text-gray-600">Video: ' + esc(w.promotedVideos.join(', ')) + '</p>';
+          }
+          if (w.message) html += '<p class="text-xs text-rose-600 mt-1 italic">"' + esc(w.message) + '"</p>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      if (s.clusterStrategies && s.clusterStrategies.length) {
+        html += '<h4 class="font-bold text-gray-800 mb-3"><i class="fas fa-users text-purple-500 mr-2"></i>Chiến lược theo nhóm K-means</h4>';
+        html += '<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">';
+        s.clusterStrategies.forEach(function(cs) {
+          html += '<div class="bg-white rounded-xl p-4 border border-purple-100 shadow-sm">';
+          html += '<div class="font-bold text-purple-700 mb-2">' + esc(cs.cluster) + '</div>';
+          if (cs.userCount) html += '<p class="text-xs text-gray-400 mb-2">' + cs.userCount + ' users</p>';
+          html += '<p class="text-xs text-gray-700 mb-1"><strong>Thông điệp:</strong> ' + esc(cs.adMessage || '') + '</p>';
+          html += '<p class="text-xs text-gray-700 mb-1"><strong>Ưu đãi:</strong> ' + esc(cs.offer || '') + '</p>';
+          html += '<p class="text-xs text-gray-500">Kênh: ' + esc((cs.channels || []).join(', ')) + '</p>';
+          if (cs.rotationFrequency) html += '<p class="text-xs text-gray-400 mt-1">Xoay: ' + esc(cs.rotationFrequency) + '</p>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      if (s.kpis && s.kpis.length) {
+        html += '<h4 class="font-bold text-gray-800 mb-2"><i class="fas fa-chart-bar text-blue-500 mr-2"></i>KPI theo dõi</h4>';
+        html += '<ul class="list-disc list-inside text-gray-600 mb-4 space-y-1">';
+        s.kpis.forEach(function(k) { html += '<li>' + esc(k) + '</li>'; });
+        html += '</ul>';
+      }
+
+      if (s.tips && s.tips.length) {
+        html += '<h4 class="font-bold text-gray-800 mb-2"><i class="fas fa-star text-amber-500 mr-2"></i>Mẹo tối ưu</h4>';
+        html += '<ul class="list-disc list-inside text-gray-600 space-y-1">';
+        s.tips.forEach(function(t) { html += '<li>' + esc(t) + '</li>'; });
+        html += '</ul>';
+      }
+
+      el.innerHTML = html || '<p class="text-gray-400 text-center py-4">AI không trả về dữ liệu. Thử lại.</p>';
+    }
+
+    function renderKMeansProfiles(profiles) {
+      const container = document.getElementById('kmeans-profiles');
+      if (!container) return;
+      if (!profiles.length) {
+        container.innerHTML = '<p class="text-gray-400 col-span-3 text-center py-6">Chưa có dữ liệu phân nhóm</p>';
+        return;
+      }
+      const colors = ['from-emerald-500/10 to-teal-500/10 border-emerald-300', 'from-blue-500/10 to-indigo-500/10 border-blue-300', 'from-amber-500/10 to-orange-500/10 border-amber-300', 'from-purple-500/10 to-pink-500/10 border-purple-300', 'from-gray-500/10 to-slate-500/10 border-gray-300'];
+      const icons = ['fa-fire', 'fa-chart-line', 'fa-snowflake', 'fa-star', 'fa-user'];
+      container.innerHTML = profiles.map((p, i) => `
+        <div class="bg-gradient-to-br ${colors[i % colors.length]} border rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <i class="fas ${icons[i % icons.length]} text-lg"></i>
+            <h4 class="font-bold text-gray-800">${p.name || p.profileName || 'Cluster ' + p.clusterId}</h4>
+          </div>
+          <p class="text-2xl font-bold text-gray-900">${p.userCount} <span class="text-sm font-normal text-gray-500">khách</span></p>
+          <div class="mt-3 space-y-1 text-sm text-gray-600">
+            <p>Engagement TB: <strong>${(p.averageEngagement || 0).toFixed ? p.averageEngagement.toFixed(1) : p.averageEngagement}</strong></p>
+            <p>Thời gian xem TB: <strong>${Math.round(p.averageWatchTime || 0)}s</strong></p>
+          </div>
+          <p class="mt-3 text-xs text-gray-500">${p.description || ''}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderEventChart(events) {
+      try {
+        const ctx = document.getElementById('dm-event-chart');
+        if (!ctx || typeof Chart === 'undefined') return;
+        if (dmEventChart) { dmEventChart.destroy(); dmEventChart = null; }
+        if (!events.length) return;
+        const labels = events.map(e => e.eventType);
+        const data = events.map(e => e.count);
+        dmEventChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{ label: 'Số lượng', data, backgroundColor: ['#8b5cf6','#3b82f6','#10b981','#f59e0b','#ef4444','#6366f1'] }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+      } catch (e) { console.warn('Chart event lỗi:', e); }
+    }
+
+    function renderClusterChart(profiles) {
+      try {
+        const ctx = document.getElementById('dm-cluster-chart');
+        if (!ctx || typeof Chart === 'undefined') return;
+        if (dmClusterChart) { dmClusterChart.destroy(); dmClusterChart = null; }
+        if (!profiles.length) return;
+        dmClusterChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: profiles.map(p => p.name || p.profileName || 'Cluster'),
+            datasets: [{ data: profiles.map(p => p.userCount), backgroundColor: ['#10b981','#3b82f6','#f59e0b','#8b5cf6','#ef4444'] }]
+          },
+          options: { responsive: true }
+        });
+      } catch (e) { console.warn('Chart cluster lỗi:', e); }
+    }
+
+    async function renderTopProducts(items) {
+      const el = document.getElementById('dm-top-products');
+      if (!el) return;
+      items = items || [];
+      if (!items.length) { el.innerHTML = '<p class="text-gray-400">Chưa có dữ liệu xem sản phẩm</p>'; return; }
+      let products = {};
+      try {
+        const res = await fetch(`${API_URL}/products`);
+        const list = await res.json();
+        (Array.isArray(list) ? list : list.data || []).forEach(p => { products[p.id] = p.name; });
+      } catch {}
+      el.innerHTML = items.map((item, i) => `
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+          <span class="font-medium text-gray-700">#${i+1} ${products[item.productId] || 'SP #' + item.productId}</span>
+          <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-bold">${item.viewCount} lượt</span>
+        </div>
+      `).join('');
+    }
+
+    function renderTopVideos(videos) {
+      const el = document.getElementById('dm-top-videos');
+      if (!el) return;
+      videos = videos || [];
+      if (!videos.length) { el.innerHTML = '<p class="text-gray-400">Chưa có dữ liệu video</p>'; return; }
+      el.innerHTML = videos.map((v, i) => {
+        const title = (v.videoUrl || '').split('/').pop() || 'Video';
+        return `
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+          <div>
+            <span class="font-medium text-gray-700">#${i+1} ${title}</span>
+            <p class="text-xs text-gray-400">Xem TB: ${Math.round(v.averageWatchPercentage || 0)}%</p>
+          </div>
+          <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-bold">${v.viewCount} lượt</span>
+        </div>`;
+      }).join('');
+    }
+
+    function renderInterest(data) {
+      const el = document.getElementById('dm-interest');
+      if (!el) return;
+      const entries = Object.entries(data || {});
+      if (!entries.length) { el.innerHTML = '<p class="text-gray-400">Chưa có dữ liệu sở thích</p>'; return; }
+      el.innerHTML = entries.map(([key, count]) => `
+        <span class="px-3 py-1.5 bg-pink-50 text-pink-700 border border-pink-200 rounded-full">
+          ${key} <strong class="ml-1">${count}</strong>
+        </span>
+      `).join('');
+    }
+
+    function formatInterest(raw) {
+      if (!raw) return '—';
+      try {
+        const obj = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        return Object.entries(obj).map(([k, v]) => `${k}: ${v}`).join(', ');
+      } catch {
+        return String(raw);
+      }
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '—';
+      try {
+        return new Date(iso).toLocaleString('vi-VN');
+      } catch { return iso; }
+    }
+
+    function formatFileSize(bytes) {
+      if (!bytes) return '0 B';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function populateUserFilter(users) {
+      const sel = document.getElementById('dm-user-filter');
+      if (!sel) return;
+      const current = sel.value;
+      sel.innerHTML = '<option value="">Tất cả tài khoản</option>' +
+        users.map(u => `<option value="${u.userId}">${u.name} (${u.email})</option>`).join('');
+      if (current) sel.value = current;
+    }
+
+    function filterUserBehavior() {
+      const id = document.getElementById('dm-user-filter')?.value;
+      if (!id) {
+        renderUsersBehavior(dmUsersBehaviorData);
+        return;
+      }
+      renderUsersBehavior(dmUsersBehaviorData.filter(u => String(u.userId) === String(id)));
+    }
+
+    function renderUsersBehavior(users) {
+      const el = document.getElementById('dm-users-behavior');
+      if (!el) return;
+      if (!users.length) {
+        el.innerHTML = '<p class="text-gray-400 text-center py-8">Chưa có dữ liệu hành vi. Nhấn "Tạo dữ liệu demo" hoặc đăng nhập web để thu thập.</p>';
+        return;
+      }
+
+      try {
+        el.innerHTML = users.map(u => {
+          const s = u.summary || {};
+          let html = '<details class="border border-gray-200 rounded-xl overflow-hidden" open>';
+          html += '<summary class="cursor-pointer bg-gradient-to-r from-indigo-50 to-purple-50 px-5 py-4 flex flex-wrap items-center justify-between gap-2">';
+          html += '<div><span class="font-bold text-gray-800">' + esc(u.name) + '</span>';
+          html += '<span class="text-sm text-gray-500 ml-2">' + esc(u.email) + '</span></div>';
+          html += '<div class="flex gap-2 text-xs flex-wrap">';
+          html += '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">' + (s.videoCount || 0) + ' video</span>';
+          html += '<span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">' + (s.productViewCount || 0) + ' xem SP</span>';
+          html += '<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-full">' + (s.uploadCount || 0) + ' upload</span>';
+          html += '<span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full">' + (s.totalEvents || 0) + ' sự kiện</span></div></summary>';
+          html += '<div class="p-5 space-y-6 bg-white">';
+
+          html += '<div><h4 class="font-semibold text-gray-800 mb-3"><i class="fas fa-video text-red-500 mr-2"></i>Xem video</h4>';
+          if (u.videos && u.videos.length) {
+            html += '<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50"><tr>';
+            html += '<th class="p-2 text-left">Video</th><th class="p-2 text-center">Đoạn xem (giây)</th><th class="p-2 text-center">Tổng (giây)</th><th class="p-2 text-center">%</th><th class="p-2 text-left">Quan tâm</th><th class="p-2 text-left">Thời gian</th></tr></thead><tbody>';
+            u.videos.forEach(v => {
+              html += '<tr class="border-t"><td class="p-2">' + esc(v.videoTitle || v.videoUrl) + '</td>';
+              html += '<td class="p-2 text-center font-bold text-blue-600">' + v.watchedSeconds + 's</td>';
+              html += '<td class="p-2 text-center">' + v.totalDuration + 's</td>';
+              html += '<td class="p-2 text-center">' + v.watchPercentage + '%</td>';
+              html += '<td class="p-2 text-xs">' + esc(formatInterest(v.interest)) + '</td>';
+              html += '<td class="p-2 text-xs text-gray-400">' + formatDate(v.watchedAt) + '</td></tr>';
+            });
+            html += '</tbody></table></div>';
+          } else {
+            html += '<p class="text-gray-400 text-sm">Chưa xem video nào</p>';
+          }
+          html += '</div>';
+
+          html += '<div><h4 class="font-semibold text-gray-800 mb-3"><i class="fas fa-stopwatch text-purple-500 mr-2"></i>Xem chi tiết sản phẩm</h4>';
+          if (u.productViews && u.productViews.length) {
+            html += '<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50"><tr>';
+            html += '<th class="p-2 text-left">Sản phẩm</th><th class="p-2 text-center">Thời gian (giây)</th><th class="p-2 text-left">Quan tâm</th><th class="p-2 text-left">Trang</th><th class="p-2 text-left">Thời gian</th></tr></thead><tbody>';
+            u.productViews.forEach(pv => {
+              html += '<tr class="border-t"><td class="p-2">' + esc(pv.productName || ('SP #' + pv.productId)) + '</td>';
+              html += '<td class="p-2 text-center font-bold text-purple-600">' + pv.durationSeconds + 's</td>';
+              html += '<td class="p-2 text-xs">' + esc(formatInterest(pv.interest)) + '</td>';
+              html += '<td class="p-2 text-xs">' + esc(pv.pageName) + '</td>';
+              html += '<td class="p-2 text-xs text-gray-400">' + formatDate(pv.createdAt) + '</td></tr>';
+            });
+            html += '</tbody></table></div>';
+          } else {
+            html += '<p class="text-gray-400 text-sm">Chưa có dữ liệu xem sản phẩm</p>';
+          }
+          html += '</div>';
+
+          html += '<div><h4 class="font-semibold text-gray-800 mb-3"><i class="fas fa-cloud-upload-alt text-amber-500 mr-2"></i>File upload</h4>';
+          if (u.uploads && u.uploads.length) {
+            html += '<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50"><tr>';
+            html += '<th class="p-2 text-left">Tên file</th><th class="p-2 text-center">Loại</th><th class="p-2 text-center">Size</th><th class="p-2 text-left">Mô tả</th><th class="p-2 text-center">Tải</th><th class="p-2 text-left">Ngày</th></tr></thead><tbody>';
+            u.uploads.forEach(f => {
+              html += '<tr class="border-t"><td class="p-2">' + esc(f.fileName) + '</td>';
+              html += '<td class="p-2 text-center text-xs">' + esc(f.fileType) + '</td>';
+              html += '<td class="p-2 text-center text-xs">' + formatFileSize(f.fileSizeBytes) + '</td>';
+              html += '<td class="p-2 text-xs">' + esc(f.description) + '</td>';
+              html += '<td class="p-2 text-center"><a href="' + API_URL + '/upload/' + f.id + '/download" target="_blank" class="text-blue-600 text-xs">Tải</a></td>';
+              html += '<td class="p-2 text-xs text-gray-400">' + formatDate(f.uploadedAt) + '</td></tr>';
+            });
+            html += '</tbody></table></div>';
+          } else {
+            html += '<p class="text-gray-400 text-sm">Chưa upload file nào</p>';
+          }
+          html += '</div></div></details>';
+          return html;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+        el.innerHTML = '<p class="text-red-500 text-center py-4">Lỗi hiển thị: ' + esc(err.message) + '</p>';
+      }
+    }
+
+    // Gắn hàm lên window để onclick hoạt động ổn định
+    Object.assign(window, {
+      login, logout, setActiveNav, runKMeans, seedDemoData, loadDataMiningDashboard, filterUserBehavior,
+      generateAdStrategy, openProductModal, closeProductModal, openPromoModal, closePromoModal, exportProducts,
+      editProduct, deleteProduct, updateOrderStatus, deleteOrder, changeUserRole, deleteUser,
+      removeProductImage, removeProductVideo
+    });
+
+</script>
+</body>
+</html>

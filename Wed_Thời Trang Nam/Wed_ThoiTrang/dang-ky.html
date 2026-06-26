@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng Ký - Shop Men's Fashion</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --accent: #B71C1C; --accent-dark: #8B0A0A; --neon:#22c55e; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: radial-gradient(circle at top left,#0f172a 0,#020617 45%,#000 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color:#e5e7eb;
+      overflow-y:auto;
+    }
+    .bg-orb{position:fixed;inset:0;pointer-events:none;z-index:-1;background:
+      radial-gradient(circle at 10% 20%,rgba(239,68,68,0.25),transparent 55%),
+      radial-gradient(circle at 90% 80%,rgba(56,189,248,0.22),transparent 55%),
+      radial-gradient(circle at 50% 10%,rgba(34,197,94,0.25),transparent 55%);
+      filter:blur(10px)}
+    .shell{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);max-width:980px;width:100%;padding:20px;gap:18px;align-items:stretch}
+    .card {
+      background: rgba(15,23,42,0.9);
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(15,23,42,0.9);
+      padding: 2.2rem 2.4rem;
+      backdrop-filter: blur(22px);
+      position: relative;
+      border:1px solid rgba(148,163,184,0.35);
+    }
+    .back-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(15,23,42,0.8);
+      border: none;
+      font-size: 1.3rem;
+      color: #e5e7eb;
+      cursor: pointer;
+      border-radius:999px;
+      width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 0 0 1px rgba(148,163,184,0.4);
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+    .back-btn:hover { transform: translateX(-2px) rotate(-8deg); box-shadow:0 0 0 2px rgba(248,113,113,0.7); background:rgba(30,64,175,0.9); }
+    .input-field {
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      background:rgba(15,23,42,0.85);border-color:#1f2937;color:#e5e7eb;
+    }
+    .input-field:focus {
+      border-color: #f97373;
+      box-shadow: 0 0 0 1px rgba(248,113,113,0.8),0 0 18px rgba(248,113,113,0.45);
+      background:rgba(15,23,42,0.95);
+    }
+    .btn {
+      transition: transform 0.3s, background 0.3s, box-shadow 0.3s, filter 0.3s;
+    }
+    .btn:hover {
+      transform: scale(1.03) translateY(-1px);
+      background: linear-gradient(135deg,#f97373,#fb923c,#eab308);
+      box-shadow: 0 10px 30px rgba(248,113,113,0.55);
+      filter: saturate(1.1);
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
+      font-weight: 600;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .social-btn:hover {
+      transform: scale(1.02);
+      background: rgba(15,23,42,1);
+    }
+    .error { color: #fecaca; font-size: 0.8rem; margin-top: 0.25rem; }
+    .lottie-animation { width: 120px; height: 120px; margin: 0 auto 1.5rem; }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: radial-gradient(circle at top,#020617 0,#020617 60%,#000 100%);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 22px 60px rgba(15,23,42,0.9);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      animation: fadeIn 0.3s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-content.success { border: 1px solid rgba(34,197,94,0.9); }
+    .modal-content.error { border: 1px solid #dc3545; }
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .close-btn:hover { transform: rotate(90deg); }
+    @media (max-width: 768px) {
+      .card { padding: 1.5rem; }
+      .lottie-animation { width: 90px; height: 90px; }
+      .back-btn { top: 0.5rem; left: 0.5rem; }
+      .modal-content { padding: 1.5rem; }
+    }
+    .stepper{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-size:11px;color:#9ca3af}
+    .step-dot{width:22px;height:22px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:1px solid #4b5563;background:#020617}
+    .step-active{border-color:#f97373;color:#fecaca;box-shadow:0 0 0 2px rgba(248,113,113,0.6)}
+    .strength-bar{height:5px;border-radius:999px;background:#1f2937;overflow:hidden;margin-top:4px}
+    .strength-fill{height:100%;width:0%;transition:width .3s,background .3s}
+    .shake{animation:shake .35s ease-in-out}
+    @keyframes shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+    .badge-pill{font-size:0.7rem;text-transform:uppercase;letter-spacing:.16em;border-radius:999px;padding:4px 9px;border:1px solid rgba(148,163,184,0.6);color:#9ca3af}
+    @media(max-width:900px){.shell{grid-template-columns:minmax(0,1fr);padding:16px}.card{padding:1.7rem}}
+  </style>
+</head>
+<body>
+  <div class="bg-orb"></div>
+  <div class="shell">
+  <div class="card" id="register-card">
+    <button class="back-btn" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></button>
+    <lottie-player class="lottie-animation" src="https://assets9.lottiefiles.com/packages/lf20_2i7yq7nq.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    <h1 class="text-3xl font-bold mb-2 text-center text-white">Tạo tài khoản Shop</h1>
+    <p class="text-xs text-center text-gray-400 mb-4">Bắt đầu chỉ với 3 bước: Thông tin · Bảo mật · Xác minh</p>
+
+    <div class="stepper">
+      <div class="flex flex-col items-center flex-1">
+        <div class="step-dot step-active" id="step-dot-1">1</div>
+        <span class="mt-1">Thông tin</span>
+      </div>
+      <div class="h-px flex-1 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 mx-1"></div>
+      <div class="flex flex-col items-center flex-1">
+        <div class="step-dot" id="step-dot-2">2</div>
+        <span class="mt-1">Bảo mật</span>
+      </div>
+      <div class="h-px flex-1 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 mx-1"></div>
+      <div class="flex flex-col items-center flex-1">
+        <div class="step-dot" id="step-dot-3">3</div>
+        <span class="mt-1">Xác minh</span>
+      </div>
+    </div>
+
+    <form id="register-form" class="space-y-4">
+      <div id="step-1" class="space-y-4">
+        <div class="flex items-center gap-3">
+          <div id="avatar-preview" class="w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-600">Shop</div>
+          <div class="text-xs text-gray-400">
+            <div class="font-semibold text-gray-100">Ảnh đại diện</div>
+            <div>Tải ảnh hoặc để Shop tự tạo avatar từ tên bạn.</div>
+          </div>
+        </div>
+        <input type="file" id="avatar-input" accept="image/*" class="hidden" />
+        <button type="button" id="btn-upload-avatar" class="text-[11px] px-3 py-1 rounded-full border border-slate-600 text-gray-200">Chọn ảnh từ máy</button>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-300">Họ và tên</label>
+          <input type="text" id="register-name" class="input-field w-full p-3 border rounded-lg mt-1" required placeholder="Nhập họ và tên" />
+          <div id="name-error" class="error"></div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-300">Email</label>
+          <input type="email" id="register-email" class="input-field w-full p-3 border rounded-lg mt-1" required placeholder="Nhập email" />
+          <div id="email-suggestion" class="text-[11px] text-gray-400 mt-1"></div>
+          <div id="email-error" class="error"></div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-300">Số điện thoại</label>
+          <input type="tel" id="register-phone" class="input-field w-full p-3 border rounded-lg mt-1" placeholder="Nhập số điện thoại" />
+          <div id="phone-error" class="error"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs text-gray-300">
+          <div>
+            <label class="block mb-1">Giới tính (tuỳ chọn)</label>
+            <select id="register-gender" class="input-field w-full p-2 border rounded-lg">
+              <option value="">Chọn</option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+              <option value="other">Khác</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1">Ngày sinh (tuỳ chọn)</label>
+            <input type="date" id="register-dob" class="input-field w-full p-2 border rounded-lg" />
+          </div>
+        </div>
+      </div>
+
+      <div id="step-2" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-medium text-gray-300">Mật khẩu</label>
+          <div class="relative">
+            <input type="password" id="register-password" class="input-field w-full p-3 pr-10 border rounded-lg mt-1" required placeholder="Nhập mật khẩu" />
+            <button type="button" id="toggle-pass" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 text-sm"><i class="far fa-eye"></i></button>
+          </div>
+          <div class="strength-bar"><div id="strength-fill" class="strength-fill"></div></div>
+          <div id="password-error" class="error"></div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-300">Xác nhận mật khẩu</label>
+          <input type="password" id="register-confirm-password" class="input-field w-full p-3 border rounded-lg mt-1" required placeholder="Xác nhận mật khẩu" />
+          <div id="confirm-error" class="error"></div>
+        </div>
+        <div class="flex items-center justify-between text-xs text-gray-300">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="terms-checkbox" class="mr-1" />
+            Tôi đồng ý với <button type="button" id="btn-terms" class="underline text-red-300">Điều khoản & Chính sách</button>
+          </label>
+        </div>
+        <div class="mt-2 text-[11px] text-gray-400">Chống bot: trả lời câu hỏi sau để tiếp tục.</div>
+        <div class="flex items-center gap-2 text-xs text-gray-200">
+          <span id="captcha-question"></span>
+          <input type="text" id="captcha-answer" class="input-field flex-1 p-2 border rounded-lg" placeholder="Câu trả lời" />
+        </div>
+        <div id="captcha-error" class="error"></div>
+      </div>
+
+      <div id="step-3" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-medium text-gray-300">Xác minh OTP</label>
+          <div class="flex gap-2 mb-1">
+            <input type="text" id="otp-input" maxlength="6" class="input-field w-full p-3 border rounded-lg" placeholder="Nhập mã OTP 6 số" />
+            <button type="button" id="btn-send-otp" class="text-[11px] px-3 rounded-lg border border-red-400 text-red-200 bg-red-900 bg-opacity-30">Gửi OTP</button>
+          </div>
+          <div class="flex justify-between text-[11px] text-gray-400">
+            <span id="otp-hint"></span>
+            <span id="otp-countdown"></span>
+          </div>
+          <div id="otp-error" class="error"></div>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center pt-2">
+        <button type="button" id="btn-prev" class="text-xs text-gray-400 hover:text-gray-200">← Quay lại</button>
+        <button type="button" id="btn-next" class="btn bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-gray-900 text-sm font-semibold px-4 py-2 rounded-2xl flex items-center gap-2">
+          <span id="next-text">Tiếp tục</span>
+          <span id="next-spinner" class="hidden w-4 h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin"></span>
+        </button>
+      </div>
+
+      <div class="text-center mt-2">
+        <p class="text-sm text-gray-400">Hoặc đăng ký nhanh với</p>
+        <button id="facebook-register" class="social-btn mt-2 mb-2"><i class="fab fa-facebook-f mr-2 text-blue-400"></i> Facebook</button>
+        <button id="google-register" class="social-btn mb-2"><i class="fab fa-google mr-2 text-red-400"></i> Google</button>
+        <button id="apple-register" class="social-btn"><i class="fab fa-apple mr-2 text-gray-200"></i> Apple ID</button>
+      </div>
+      <p class="text-center text-sm text-gray-300 mt-3">Đã có tài khoản? <a href="dang-nhap.html" class="text-red-400 hover:underline">Đăng nhập</a></p>
+      <p class="text-center text-[11px] text-gray-500 mt-1">Chúng tôi tôn trọng quyền riêng tư của bạn. <a href="#" class="text-red-400 hover:underline">Xem chính sách</a></p>
+    </form>
+  </div>
+
+  <aside class="hidden md:flex flex-col justify-between rounded-3xl border border-gray-700/60 bg-gradient-to-b from-slate-900/90 via-slate-950/95 to-black/95 p-6 shadow-[0_25px_80px_rgba(15,23,42,0.9)]">
+    <div>
+      <div class="badge-pill mb-4">Shop · SIGN UP</div>
+      <h2 class="text-xl md:text-2xl font-semibold mb-2 text-white">Thời trang dành cho bạn</h2>
+      <p class="text-sm text-gray-400 mb-4">Tạo tài khoản để lưu wishlist, lịch sử đơn hàng và nhận ưu đãi sớm nhất.</p>
+      <ul class="text-xs text-gray-400 space-y-2">
+        <li><i class="fa-solid fa-user-plus text-emerald-400 mr-1"></i> Đăng ký an toàn với xác minh OTP & captcha thông minh.</li>
+        <li><i class="fa-solid fa-bolt text-yellow-300 mr-1"></i> Đăng ký 1 chạm bằng Google, Facebook, Apple.</li>
+        <li><i class="fa-solid fa-shirt text-sky-300 mr-1"></i> Cá nhân hóa phong cách qua hồ sơ thời trang của bạn.</li>
+      </ul>
+    </div>
+    <div class="relative mt-6">
+      <div class="h-40 rounded-2xl overflow-hidden border border-slate-700/80 bg-[url('images/preview/hero-register.jpg')] bg-cover bg-center"></div>
+      <div class="absolute -bottom-3 left-3 right-3 bg-slate-900/90 border border-slate-700 rounded-2xl px-3 py-2 flex items-center justify-between text-[11px] text-gray-300">
+        <div>
+          <div class="font-semibold">Shop Members</div>
+          <div class="text-gray-400">Tích điểm mỗi đơn, đổi ưu đãi độc quyền.</div>
+        </div>
+        <div class="text-right">
+          <div class="text-emerald-400 font-semibold">+500 điểm</div>
+          <div class="text-gray-500">Cho lần đăng ký đầu tiên</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  </div>
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <i class="fas fa-check-circle text-4xl mb-4" style="color: var(--accent);"></i>
+      <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+      <p id="modal-message" class="text-gray-600 mb-4"></p>
+      <button id="modal-ok" class="btn bg-red-600 text-white py-2 px-4 rounded-lg">OK</button>
+    </div>
+  </div>
+
+ 
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId: 'YOUR_FB_APP_ID', // Thay bằng App ID của bạn
+        cookie: true,
+        xfbml: true,
+        version: 'v17.0'
+      });
+    };
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    const API_BASE_URL = (() => {
+      if (location.protocol === 'https:') return 'https://localhost:7070/api';
+      return 'http://localhost:5281/api';
+    })();
+    console.log('Using API_BASE_URL =', API_BASE_URL);
+
+    const form = document.getElementById('register-form');
+    const card = document.getElementById('register-card');
+    const stepDots = [
+      document.getElementById('step-dot-1'),
+      document.getElementById('step-dot-2'),
+      document.getElementById('step-dot-3')
+    ];
+    const steps = [
+      document.getElementById('step-1'),
+      document.getElementById('step-2'),
+      document.getElementById('step-3')
+    ];
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const nextText = document.getElementById('next-text');
+    const nextSpinner = document.getElementById('next-spinner');
+    let currentStep = 0;
+
+    const nameInput = document.getElementById('register-name');
+    const emailInput = document.getElementById('register-email');
+    const phoneInput = document.getElementById('register-phone');
+    const passwordInput = document.getElementById('register-password');
+    const confirmInput = document.getElementById('register-confirm-password');
+    const nameError = document.getElementById('name-error');
+    const emailError = document.getElementById('email-error');
+    const phoneError = document.getElementById('phone-error');
+    const passwordError = document.getElementById('password-error');
+    const confirmError = document.getElementById('confirm-error');
+    const emailSuggestion = document.getElementById('email-suggestion');
+    const strengthFill = document.getElementById('strength-fill');
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    const captchaQ = document.getElementById('captcha-question');
+    const captchaAnswer = document.getElementById('captcha-answer');
+    const captchaError = document.getElementById('captcha-error');
+    const otpInput = document.getElementById('otp-input');
+    const otpHint = document.getElementById('otp-hint');
+    const otpCountdown = document.getElementById('otp-countdown');
+    const otpError = document.getElementById('otp-error');
+    const btnSendOtp = document.getElementById('btn-send-otp');
+
+    let captchaCorrect = null;
+    let otpCode = null;
+    let otpExpire = null;
+    let countdownTimer = null;
+
+    function shake(){
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      setTimeout(()=>card.classList.remove('shake'),350);
+    }
+
+    function setStep(index){
+      currentStep = index;
+      steps.forEach((s,i)=>{ s.classList.toggle('hidden',i!==index); });
+      stepDots.forEach((d,i)=>{
+        d.classList.toggle('step-active',i<=index);
+      });
+      btnPrev.style.visibility = index===0?'hidden':'visible';
+      if(index===2) nextText.textContent='Hoàn tất đăng ký'; else nextText.textContent='Tiếp tục';
+    }
+
+    setStep(0);
+
+    function formatPhone(value){
+      const digits = value.replace(/\D/g,'').slice(0,11);
+      if(digits.length<=3) return digits;
+      if(digits.length<=6) return digits.replace(/(\d{3})(\d+)/,'$1 $2');
+      return digits.replace(/(\d{3})(\d{3})(\d+)/,'$1 $2 $3');
+    }
+
+    phoneInput.addEventListener('input',()=>{
+      const raw = phoneInput.value;
+      phoneInput.value = formatPhone(raw);
+      phoneError.textContent='';
+    });
+
+    nameInput.addEventListener('input',()=>{
+      const name = nameInput.value.trim();
+      nameError.textContent = name.length<2?'Họ tên phải có ít nhất 2 ký tự!':'';
+      const initials = name.split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('')||'Shop';
+      const avatar = document.getElementById('avatar-preview');
+      avatar.textContent = initials;
+    });
+
+    emailInput.addEventListener('input',()=>{
+      const email = emailInput.value.trim();
+      emailError.textContent='';
+      emailSuggestion.textContent='';
+      const match = email.match(/^([^@]+)@/);
+      if(match){
+        const base = match[1];
+        const suggestion = base.length>3 ? base : base+'123';
+        emailSuggestion.textContent = `Gợi ý username: ${suggestion}`;
+      }
+    });
+
+    function evaluatePassword(pw){
+      let score = 0;
+      if(pw.length>=6) score++;
+      if(/[A-Z]/.test(pw)) score++;
+      if(/[0-9]/.test(pw)) score++;
+      if(/[^A-Za-z0-9]/.test(pw)) score++;
+      return score;
+    }
+
+    passwordInput.addEventListener('input',()=>{
+      const pw = passwordInput.value;
+      const score = evaluatePassword(pw);
+      let pct = [0,25,50,75,100][score];
+      strengthFill.style.width = pct+'%';
+      strengthFill.style.background = score<=1?'#f97373':score===2?'#facc15':'#22c55e';
+      passwordError.textContent = pw.length<6?'Mật khẩu phải có ít nhất 6 ký tự!':'';
+    });
+
+    confirmInput.addEventListener('input',()=>{
+      confirmError.textContent = confirmInput.value!==passwordInput.value?'Mật khẩu không khớp!':'';
+    });
+
+    document.getElementById('toggle-pass').addEventListener('click',()=>{
+      const isPw = passwordInput.type==='password';
+      passwordInput.type = isPw?'text':'password';
+      confirmInput.type = isPw?'text':'password';
+      document.getElementById('toggle-pass').innerHTML = isPw?'<i class="far fa-eye-slash"></i>':'<i class="far fa-eye"></i>';
+    });
+
+    function genCaptcha(){
+      const a = 3+Math.floor(Math.random()*5);
+      const b = 2+Math.floor(Math.random()*5);
+      captchaCorrect = a + b;
+      captchaQ.textContent = `${a} + ${b} = ?`;
+      captchaAnswer.value='';
+      captchaError.textContent='';
+    }
+    genCaptcha();
+
+    document.getElementById('btn-upload-avatar').addEventListener('click',()=>{
+      document.getElementById('avatar-input').click();
+    });
+    document.getElementById('avatar-input').addEventListener('change',(e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        const avatar = document.getElementById('avatar-preview');
+        avatar.textContent='';
+        avatar.style.backgroundImage=`url(${reader.result})`;
+        avatar.style.backgroundSize='cover';
+        avatar.style.backgroundPosition='center';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('btn-terms').addEventListener('click',()=>{
+      showModal('Điều khoản sử dụng', 'Bằng việc đăng ký, bạn đồng ý cho Shop lưu trữ thông tin tài khoản để phục vụ việc mua sắm, xử lý đơn hàng và chăm sóc khách hàng. Bạn có thể yêu cầu xoá dữ liệu bất kỳ lúc nào theo chính sách bảo mật của chúng tôi.', true);
+    });
+
+    function validateStep1(){
+      let ok = true;
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const phone = phoneInput.value.replace(/\s/g,'');
+      nameError.textContent='';
+      emailError.textContent='';
+      phoneError.textContent='';
+      if(!name || name.length<2){ nameError.textContent='Họ tên phải có ít nhất 2 ký tự!'; ok=false; }
+      if(!email || !/\S+@\S+\.\S+/.test(email)){ emailError.textContent='Vui lòng nhập email hợp lệ!'; ok=false; }
+      if(phone && !/^0\d{9,10}$/.test(phone)){ phoneError.textContent='Số điện thoại không hợp lệ.'; ok=false; }
+      if(!ok) shake();
+      return ok;
+    }
+
+    function validateStep2(){
+      let ok = true;
+      const pw = passwordInput.value;
+      const cf = confirmInput.value;
+      passwordError.textContent='';
+      confirmError.textContent='';
+      captchaError.textContent='';
+      if(!pw || pw.length<6){ passwordError.textContent='Mật khẩu phải có ít nhất 6 ký tự!'; ok=false; }
+      if(pw!==cf){ confirmError.textContent='Mật khẩu không khớp!'; ok=false; }
+      if(!termsCheckbox.checked){ captchaError.textContent='Bạn cần đồng ý Điều khoản & Chính sách.'; ok=false; }
+      if(parseInt(captchaAnswer.value,10)!==captchaCorrect){ captchaError.textContent='Câu trả lời chống bot chưa đúng.'; ok=false; genCaptcha(); }
+      if(!ok) shake();
+      return ok;
+    }
+
+    function startCountdown(){
+      if(countdownTimer) clearInterval(countdownTimer);
+      let remain = 60;
+      otpCountdown.textContent = '60s';
+      countdownTimer = setInterval(()=>{
+        remain--;
+        if(remain<=0){
+          clearInterval(countdownTimer);
+          otpCountdown.textContent='Hết hạn, gửi lại mã';
+          otpCode=null;otpExpire=null;
+        } else {
+          otpCountdown.textContent = remain+'s';
+        }
+      },1000);
+    }
+
+    btnSendOtp.addEventListener('click',()=>{
+      const email = emailInput.value.trim();
+      const phone = phoneInput.value.replace(/\s/g,'');
+      otpError.textContent='';
+      if(!email && !phone){ otpError.textContent='Vui lòng nhập email hoặc SĐT ở Bước 1 trước.'; setStep(0); shake(); return; }
+      otpCode = String(Math.floor(100000+Math.random()*900000));
+      otpExpire = Date.now()+5*60*1000;
+      otpHint.textContent = `Mã OTP demo: ${otpCode} (hết hạn sau 5 phút).`;
+      otpHint.style.color='#a5f3fc';
+      startCountdown();
+    });
+
+    function validateStep3(){
+      otpError.textContent='';
+      if(!otpCode){ otpError.textContent='Vui lòng nhấn "Gửi OTP" để nhận mã.'; shake(); return false; }
+      if(!otpInput.value || otpInput.value.length!==6){ otpError.textContent='Mã OTP phải gồm 6 số.'; shake(); return false; }
+      if(Date.now()>otpExpire){ otpError.textContent='Mã OTP đã hết hạn. Vui lòng gửi lại.'; shake(); return false; }
+      if(otpInput.value!==otpCode){ otpError.textContent='Mã OTP không đúng.'; shake(); return false; }
+      return true;
+    }
+
+    btnPrev.addEventListener('click',()=>{
+      if(currentStep>0) setStep(currentStep-1);
+    });
+
+    async function submitRegister(){
+      nextSpinner.classList.remove('hidden');
+      btnNext.disabled=true;
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      try {
+        const response = await fetch(`${API_BASE_URL}/Auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        if (!response.ok) {
+          let message = 'Có lỗi xảy ra.';
+          if (response.status === 409) {
+            try {
+              const errObj = await response.json();
+              message = errObj.error || errObj.message || 'Email này đã được đăng ký.';
+            } catch {
+              message = 'Email này đã được đăng ký.';
+            }
+          } else {
+            try {
+              const errObj = await response.json();
+              message = errObj.error || errObj.message || JSON.stringify(errObj);
+            } catch (e) {
+              try { message = await response.text(); } catch {}
+            }
+          }
+          showModal('Thất bại', message, false);
+          shake();
+          return;
+        }
+        showModal('Thành công', 'Đăng ký thành công! Vui lòng đăng nhập.', true);
+        setTimeout(() => { window.location.href = 'dang-nhap.html'; }, 2000);
+      } catch (error) {
+        console.error('Lỗi đăng ký:', error);
+        showModal('Lỗi', 'Không thể kết nối đến máy chủ. Vui lòng thử lại.', false);
+        shake();
+      } finally {
+        nextSpinner.classList.add('hidden');
+        btnNext.disabled=false;
+      }
+    }
+
+    btnNext.addEventListener('click',()=>{
+      if(currentStep===0){ if(!validateStep1()) return; setStep(1); return; }
+      if(currentStep===1){ if(!validateStep2()) return; setStep(2); return; }
+      if(currentStep===2){ if(!validateStep3()) return; submitRegister(); }
+    });
+
+    form.addEventListener('submit',(e)=>{ e.preventDefault(); });
+
+    document.getElementById('facebook-register').addEventListener('click', () => {
+      FB.login(function(response) {
+        if (response.authResponse) {
+          FB.api('/me', { fields: 'name,email' }, function(userData) {
+            const newUser = {
+              id: Date.now().toString(),
+              name: userData.name,
+              email: userData.email || `fb_${Date.now()}@Shop.com`,
+              password: Math.random().toString(36).substring(2, 10),
+              createdAt: new Date().toISOString(),
+              lastLogin: new Date().toISOString()
+            };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+            const expiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+            const sessionData = { userId: newUser.id, token: sessionToken, expiry };
+            localStorage.setItem('session', JSON.stringify(sessionData));
+            showModal('Thành công', 'Đăng ký bằng Facebook thành công!', true);
+            setTimeout(() => { window.location.href = 'tai-khoan.html'; }, 2000);
+          });
+        } else {
+          showModal('Thất bại', 'Đăng ký bằng Facebook thất bại!', false);
+        }
+      }, { scope: 'public_profile,email' });
+    });
+
+    document.getElementById('google-register').addEventListener('click', () => {
+      showModal('Google', 'Đăng ký nhanh với Google (demo). Thực tế sẽ dùng OAuth Google.', true);
+    });
+    const appleBtn = document.getElementById('apple-register');
+    if(appleBtn) appleBtn.addEventListener('click',()=>{
+      showModal('Apple ID', 'Đăng ký bằng Apple ID (demo).', true);
+    });
+
+    function showModal(title, message, isSuccess) {
+      const modal = document.getElementById('modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalMessage = document.getElementById('modal-message');
+      const modalContent = document.querySelector('.modal-content');
+      modalContent.className = 'modal-content' + (isSuccess ? ' success' : ' error');
+      modalTitle.textContent = title;
+      modalMessage.textContent = message;
+      modal.style.display = 'flex';
+      // Đã bỏ confetti vì chưa import thư viện
+      document.getElementById('modal-ok').focus();
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.style.display = 'none';
+    }
+
+    document.getElementById('modal-ok').addEventListener('click', closeModal);
+  </script>
+</body>
+</html>

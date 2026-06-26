@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanh Toán Thành Công - Shop Men's Fashion</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --accent: #B71C1C; --accent-dark: #8B0A0A; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+    .lottie-animation {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 1rem;
+    }
+    .btn {
+      transition: transform 0.3s, background 0.3s;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      background: var(--accent-dark);
+    }
+    .confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    @media (max-width: 768px) {
+      .card { padding: 1.5rem; }
+      .lottie-animation { width: 120px; height: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+  <div class="card">
+    <lottie-player
+      class="lottie-animation"
+      src="https://assets9.lottiefiles.com/packages/lf20_1d2q1k8f.json" <!-- Success Checkmark animation -->
+      background="transparent"
+      speed="1"
+      loop
+      autoplay
+    ></lottie-player>
+    <h1 class="text-3xl font-bold mb-4 text-gray-800">Thanh toán thành công!</h1>
+    <p class="text-gray-600 mb-6">Cảm ơn bạn đã mua sắm tại Shop Men's Fashion. Đơn hàng của bạn sẽ được giao trong 2-3 ngày.</p>
+    <p class="text-gray-500 mb-6">Mã đơn hàng: <span id="order-id" class="font-medium text-gray-700">ORDER_20251029_001</span></p>
+    <div class="space-y-4 mb-6">
+      <a href="index.html" class="btn inline-block bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700">Về trang chủ</a>
+      <a href="sanpham.html" class="btn inline-block bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-700">Xem sản phẩm mới</a>
+    </div>
+    <p class="text-sm text-gray-500">Hãy chia sẻ trải nghiệm của bạn:</p>
+    <div class="flex justify-center gap-4 mt-2">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://yourdomain.com" target="_blank" class="text-blue-600 hover:text-blue-800">
+        <i class="fab fa-facebook-f text-2xl"></i>
+      </a>
+      <a href="https://zalo.me/share?url=https://yourdomain.com" target="_blank" class="text-green-600 hover:text-green-800">
+        <i class="fab fa-zalo text-2xl"></i>
+      </a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <script>
+    // Hiệu ứng confetti
+    const canvas = document.getElementById('confetti-canvas');
+    const myConfetti = confetti.create(canvas, {
+      resize: true,
+      useWorker: true
+    });
+    myConfetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+    setTimeout(() => myConfetti.reset(), 3000); // Dừng sau 3s
+
+    // Tạo mã đơn hàng ngẫu nhiên
+    const orderId = document.getElementById('order-id');
+    orderId.textContent = `ORDER_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}_${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+  </script>
+</body>
+</html>

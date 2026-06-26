@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ưu Đãi & Săn Sale - Shop Men's Fashion</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    :root { --accent: #B71C1C; --accent-dark: #8B0A0A; }
+
+    body { background: radial-gradient(circle at top, #111827 0, #020617 45%, #020617 100%); color: #e5e7eb; }
+
+    .glass-card {
+      background: linear-gradient(135deg, rgba(15,23,42,0.85), rgba(15,23,42,0.95));
+      border-radius: 24px;
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: 0 24px 80px rgba(15,23,42,0.75);
+      backdrop-filter: blur(18px);
+    }
+
+    .ticket {
+      position: relative;
+      border-radius: 24px;
+      background: radial-gradient(circle at top left, #ef4444, #7f1d1d 60%);
+      color: white;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(127,29,29,0.7);
+    }
+    .ticket::before,
+    .ticket::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: #020617;
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.85);
+    }
+    .ticket::before { left: -12px; }
+    .ticket::after { right: -12px; }
+
+    .timer-part {
+      min-width: 52px;
+    }
+
+    .spin-btn {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+    .spin-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 18px 45px rgba(248,113,113,0.45);
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+    }
+
+    .pill-filter {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.85);
+      transition: all 0.25s ease;
+    }
+    .pill-filter.active,
+    .pill-filter:hover {
+      border-color: rgba(248,113,113,0.9);
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.4), rgba(15,23,42,1));
+      color: #fee2e2;
+    }
+
+    .deal-card {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), rgba(15,23,42,1));
+      border: 1px solid rgba(148,163,184,0.35);
+      box-shadow: 0 18px 55px rgba(15,23,42,0.9);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .deal-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 26px 80px rgba(15,23,42,0.95);
+      border-color: rgba(248,113,113,0.9);
+    }
+
+    .deal-badge {
+      border-radius: 999px;
+      padding: 0.15rem 0.6rem;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .floating-label {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(248,113,113,0.25));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .deal-card:hover .floating-label { opacity: 1; }
+
+    .spin-result {
+      animation: fadeInUp 0.4s ease-out;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="min-h-screen text-gray-100 pb-24">
+    <!-- HEADER SIMPLE LINK BACK -->
+    <header class="border-b border-gray-800/80 bg-black/40 backdrop-blur-xl sticky top-0 z-40">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2 text-sm text-gray-300 hover:text-white">
+          <i class="fas fa-chevron-left text-xs"></i>
+          <span>Về trang chủ</span>
+        </a>
+        <div class="flex items-center gap-2 text-xs text-gray-400">
+          <i class="fas fa-ticket-alt text-red-400"></i>
+          <span>Ưu đãi chỉ áp dụng online</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 pt-8">
+      <!-- HERO + COUNTDOWN + CODE HOT -->
+      <section class="grid lg:grid-cols-[1.4fr,1fr] gap-8 items-stretch mb-10">
+        <div class="glass-card p-6 md:p-8 relative overflow-hidden">
+          <div class="absolute inset-0 opacity-40 pointer-events-none" style="background-image: radial-gradient(circle at top left, rgba(248,113,113,0.5), transparent 55%);"></div>
+          <div class="relative z-10 flex flex-col gap-4">
+            <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-red-300">
+              <i class="fas fa-bolt text-red-400"></i>
+              <span>Shop sale playground</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
+              Săn ưu đãi <span class="text-red-400">cực gắt</span>
+              <span class="block text-base md:text-lg font-normal text-gray-300 mt-1">Quay thưởng, gom mã, mix outfit giảm giá sâu.</span>
+            </h1>
+
+            <!-- Countdown -->
+            <div class="mt-1 flex flex-wrap gap-4 items-center">
+              <div class="flex items-center gap-3 bg-black/40 border border-gray-700 rounded-2xl px-4 py-2">
+                <div class="text-xs uppercase tracking-[0.2em] text-gray-400 flex items-center gap-2">
+                  <i class="far fa-clock text-red-400"></i>
+                  <span>Kết thúc sau</span>
+                </div>
+                <div id="uudai-countdown" class="flex gap-2 text-xs font-semibold">
+                  <div class="timer-part bg-gray-900/80 rounded-xl px-2.5 py-1.5 text-center">
+                    <div id="uudai-days" class="text-sm text-red-400">--</div>
+                    <div class="text-[10px] text-gray-400">NGÀY</div>
+                  </div>
+                  <div class="timer-part bg-gray-900/80 rounded-xl px-2.5 py-1.5 text-center">
+                    <div id="uudai-hours" class="text-sm text-red-400">--</div>
+                    <div class="text-[10px] text-gray-400">GIỜ</div>
+                  </div>
+                  <div class="timer-part bg-gray-900/80 rounded-xl px-2.5 py-1.5 text-center">
+                    <div id="uudai-mins" class="text-sm text-red-400">--</div>
+                    <div class="text-[10px] text-gray-400">PHÚT</div>
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] md:text-xs text-gray-400 max-w-xs">
+                * Mã giảm giá áp dụng cho đơn online, không áp dụng đồng thời các chương trình khác.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticket hot code -->
+        <div class="ticket p-5 md:p-6 flex flex-col justify-between">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.25em] text-red-100/80">Hot coupon</p>
+              <h2 class="text-xl md:text-2xl font-extrabold mt-1">ShopWEEKEND</h2>
+              <p class="text-xs md:text-sm text-red-100/90 mt-1">
+                Giảm thêm <span class="font-bold">10%</span> cho đơn từ <span class="font-bold">799K</span>.
+              </p>
+            </div>
+            <div class="text-right text-xs text-red-100/80">
+              <p class="font-semibold">Dùng tối đa 1 lần/ngày</p>
+              <p class="opacity-80">HSD: <span id="uudai-expire">--</span></p>
+            </div>
+          </div>
+          <div class="mt-4 flex items-center justify-between gap-3">
+            <div class="bg-black/25 backdrop-blur px-3 py-2 rounded-xl flex items-center gap-2 text-xs">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10">
+                <i class="fas fa-barcode"></i>
+              </span>
+              <span class="font-mono tracking-[0.3em] text-sm">WEEKEND</span>
+            </div>
+            <button id="copy-weekend" class="spin-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-red-500 to-red-600">
+              <i class="fas fa-copy text-[11px]"></i>
+              <span>Sao chép mã</span>
+            </button>
+          </div>
+          <p id="copy-status" class="mt-2 text-[11px] text-red-100/80 hidden">Đã sao chép, hãy dán mã ở bước thanh toán.</p>
+        </div>
+      </section>
+
+      <!-- VÒNG QUAY GIẢ LẬP + LỌC SẢN PHẨM SALE -->
+      <section class="grid lg:grid-cols-[1.1fr,1.2fr] gap-8 items-start mb-12">
+        <!-- Spin mini-game -->
+        <div class="glass-card p-6 md:p-7 flex flex-col gap-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.25em] text-red-300">Mini game</p>
+              <h3 class="text-lg md:text-xl font-bold text-white mt-1">Quay thưởng lấy mã nhanh</h3>
+            </div>
+            <div class="w-9 h-9 rounded-2xl bg-red-600 flex items-center justify-center shadow-lg shadow-red-600/40">
+              <i class="fas fa-dice text-sm"></i>
+            </div>
+          </div>
+
+          <p class="text-xs md:text-sm text-gray-300">
+            Mỗi tài khoản được quay <strong>1 lần/giờ</strong>. Mã nhận được có thể dùng ngay cho đơn online.
+          </p>
+
+          <div class="flex items-center gap-3 mt-2">
+            <button id="spin-btn" class="spin-btn flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 via-red-600 to-rose-500 text-white font-semibold py-2.5 rounded-2xl text-sm">
+              <i class="fas fa-compact-disc animate-spin-slow"></i>
+              <span>QUAY NGAY</span>
+            </button>
+            <div class="text-[11px] text-gray-400 w-24 text-right" id="spin-info">Còn 1 lượt</div>
+          </div>
+
+          <div id="spin-result" class="mt-3 text-xs md:text-sm text-gray-200 min-h-[40px]"></div>
+        </div>
+
+        <!-- Bộ lọc sản phẩm sale -->
+        <div class="glass-card p-6 md:p-7">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.25em] text-red-300">Flash deals</p>
+              <h3 class="text-lg md:text-xl font-bold text-white mt-1">Chọn nhanh khu vực sale</h3>
+            </div>
+            <a href="sanpham.html" class="text-[11px] text-gray-400 hover:text-red-300 inline-flex items-center gap-1">
+              <span>Xem tất cả</span>
+              <i class="fas fa-arrow-right text-[10px]"></i>
+            </a>
+          </div>
+
+          <div class="flex flex-wrap gap-2 mb-4">
+            <button class="pill-filter active text-xs px-3 py-1.5" data-sale-target="?tag=hot">
+              <i class="fas fa-fire text-red-400 mr-1"></i>Hot hôm nay
+            </button>
+            <button class="pill-filter text-xs px-3 py-1.5" data-sale-target="?cat=áo khoác">
+              Áo khoác giảm sâu
+            </button>
+            <button class="pill-filter text-xs px-3 py-1.5" data-sale-target="?cat=quần jeans">
+              Quần jeans dưới 600K
+            </button>
+            <button class="pill-filter text-xs px-3 py-1.5" data-sale-target="?cat=áo polo">
+              Polo mua 2 giảm thêm
+            </button>
+          </div>
+
+          <p class="text-[11px] text-gray-400 mb-3">
+            Chọn 1 tag bên trên, hệ thống sẽ đưa bạn sang trang <strong>Sản phẩm</strong> với bộ lọc tương ứng.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div class="deal-card">
+              <div class="floating-label"></div>
+              <div class="p-4 flex flex-col gap-2 relative z-10">
+                <div class="flex items-center justify-between">
+                  <span class="deal-badge bg-red-500/10 text-red-400 border border-red-500/40">ÁO KHOÁC</span>
+                  <span class="text-xs text-gray-400">Tối đa -40%</span>
+                </div>
+                <p class="font-semibold text-gray-100">Classic Outerwear Drop</p>
+                <p class="text-[11px] text-gray-400">Chỉ hôm nay: mix áo khoác với bất kỳ quần jeans.</p>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <span class="text-base font-bold text-red-400">699K - 1.099K</span>
+                </div>
+                <button onclick="window.location.href='sanpham.html?cat=áo khoác'" class="mt-2 w-full text-[11px] font-semibold bg-white text-gray-900 py-2 rounded-xl hover:bg-gray-100 transition flex items-center justify-center gap-1.5">
+                  Săn áo khoác
+                  <i class="fas fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="deal-card">
+              <div class="floating-label"></div>
+              <div class="p-4 flex flex-col gap-2 relative z-10">
+                <div class="flex items-center justify-between">
+                  <span class="deal-badge bg-amber-500/10 text-amber-300 border border-amber-500/40">SET OUTFIT</span>
+                  <span class="text-xs text-gray-400">Extra -10%</span>
+                </div>
+                <p class="font-semibold text-gray-100">Polo + Jeans Weekend</p>
+                <p class="text-[11px] text-gray-400">Áp dụng khi thêm ít nhất 1 áo polo và 1 quần jeans.</p>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <span class="text-base font-bold text-amber-300">Từ 799K</span>
+                </div>
+                <button onclick="window.location.href='sanpham.html?cat=áo polo'" class="mt-2 w-full text-[11px] font-semibold bg-white text-gray-900 py-2 rounded-xl hover:bg-gray-100 transition flex items-center justify-center gap-1.5">
+                  Xem dòng Polo hot
+                  <i class="fas fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CÁC MÃ KHÁC -->
+      <section class="glass-card p-6 md:p-7">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg md:text-xl font-bold text-white">Danh sách mã hiện có</h3>
+          <span class="text-[11px] text-gray-400">Sử dụng tối đa 1 mã/đơn hàng</span>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4 text-xs md:text-sm">
+          <div class="bg-black/40 rounded-2xl border border-gray-700 p-4 flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-red-300">FREESHIP499</span>
+              <span class="text-[11px] text-gray-400">Không giới hạn</span>
+            </div>
+            <p>Freeship cho đơn từ 499K.</p>
+          </div>
+          <div class="bg-black/40 rounded-2xl border border-gray-700 p-4 flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-emerald-300">COMBO3OFF</span>
+              <span class="text-[11px] text-gray-400">Tối đa 30K</span>
+            </div>
+            <p>Giảm thêm 5% khi mua từ 3 sản phẩm.</p>
+          </div>
+          <div class="bg-black/40 rounded-2xl border border-gray-700 p-4 flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-sky-300">WELCOME</span>
+              <span class="text-[11px] text-gray-400">Cho khách mới</span>
+            </div>
+            <p>Giảm 30K cho đơn đầu tiên từ 399K.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Đếm ngược riêng cho trang ưu đãi (ví dụ: hết trong 3 ngày nữa)
+    (function () {
+      const now = new Date();
+      const expire = new Date(now);
+      expire.setDate(now.getDate() + 3);
+      expire.setHours(23, 59, 59, 0);
+
+      const expireSpan = document.getElementById('uudai-expire');
+      if (expireSpan) {
+        const d = String(expire.getDate()).padStart(2, '0');
+        const m = String(expire.getMonth() + 1).padStart(2, '0');
+        expireSpan.textContent = `${d}/${m}`;
+      }
+
+      function updateUuDaiCountdown() {
+        const now = new Date();
+        const diff = expire.getTime() - now.getTime();
+        if (diff <= 0) return;
+
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / (3600 * 24));
+        const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+
+        document.getElementById('uudai-days').textContent = String(days).padStart(2, '0');
+        document.getElementById('uudai-hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('uudai-mins').textContent = String(mins).padStart(2, '0');
+      }
+
+      updateUuDaiCountdown();
+      setInterval(updateUuDaiCountdown, 60000);
+    })();
+
+    // Sao chép mã WEEKEND
+    (function () {
+      const btn = document.getElementById('copy-weekend');
+      const status = document.getElementById('copy-status');
+      if (!btn) return;
+
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText('ShopWEEKEND');
+          if (status) {
+            status.classList.remove('hidden');
+          }
+        } catch (err) {
+          if (status) {
+            status.textContent = 'Không sao chép được, bạn hãy ghi nhớ mã: ShopWEEKEND';
+            status.classList.remove('hidden');
+          }
+        }
+      });
+    })();
+
+    // Mini game quay thưởng (giả lập)
+    (function () {
+      const spinBtn = document.getElementById('spin-btn');
+      const spinInfo = document.getElementById('spin-info');
+      const spinResult = document.getElementById('spin-result');
+      if (!spinBtn || !spinInfo || !spinResult) return;
+
+      let canSpin = true;
+
+      const rewards = [
+        { text: 'Chúc mừng! Bạn nhận được mã giảm thêm 5% cho mọi đơn, tối đa 50K.', code: 'SPIN5' },
+        { text: 'Bạn nhận được freeship cho đơn từ 399K.', code: 'SPINSHIP' },
+        { text: 'Rất tiếc, lần này chưa trúng mã. Thử lại sau 1 giờ nhé.', code: null },
+        { text: 'Chúc mừng! Giảm 50K cho đơn từ 499K.', code: 'SPIN50' }
+      ];
+
+      spinBtn.addEventListener('click', () => {
+        if (!canSpin) return;
+        canSpin = false;
+        spinBtn.classList.add('opacity-70', 'cursor-not-allowed');
+        spinInfo.textContent = 'Hết lượt, quay lại sau 1 giờ';
+
+        const reward = rewards[Math.floor(Math.random() * rewards.length)];
+        let html = `<div class="spin-result">${reward.text}`;
+        if (reward.code) {
+          html += `<br><span class="text-red-300 font-semibold">Mã: ${reward.code}</span>`;
+        }
+        html += '</div>';
+
+        spinResult.innerHTML = html;
+      });
+    })();
+
+    // Bộ lọc nhanh: chuyển sang trang sản phẩm với tham số phù hợp
+    (function () {
+      const pills = document.querySelectorAll('.pill-filter');
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          const target = pill.getAttribute('data-sale-target') || '';
+          const url = 'sanpham.html' + target;
+          window.location.href = url;
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

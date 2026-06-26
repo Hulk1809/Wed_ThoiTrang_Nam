@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lịch sử đơn - Shop</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto p-6 max-w-4xl">
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h1 class="text-2xl font-bold mb-4">Lịch sử đơn hàng</h1>
+      <div id="orders">Đang tải...</div>
+    </div>
+  </div>
+
+<script>
+(async function(){
+  const container = document.getElementById('orders');
+  const token = localStorage.getItem('token') || localStorage.getItem('jwtToken');
+  if (!token) { container.innerHTML = '<p>Bạn cần <a href="dang-nhap.html" class="text-red-600">đăng nhập</a> để xem lịch sử.</p>'; return; }
+  try {
+    const res = await fetch('http://localhost:5281/api/Order', { headers: { 'Authorization': 'Bearer ' + token }});
+    if (!res.ok) { container.innerHTML = '<p class="text-red-500">Không tải được lịch sử.</p>'; return; }
+    const arr = await res.json();
+    if (!Array.isArray(arr) || arr.length===0) { container.innerHTML = '<p>Chưa có đơn hàng nào.</p>'; return; }
+    container.innerHTML = arr.map(o => {
+      const total = o.totalAmount || (o.items||[]).reduce((s,i)=> s + ((i.product?.price||i.price||0)*(i.quantity||1)),0);
+      return `
+        <div class="border rounded p-4 mb-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="font-semibold">Đơn #${o.id} — ${o.orderStatus || ''}</div>
+              <div class="text-sm text-gray-600">Ngày: ${new Date(o.orderDate).toLocaleString()}</div>
+              <div class="text-sm">Địa chỉ: ${o.shippingAddress || '-'}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-red-600 font-bold">${(Number(total)||0).toLocaleString('vi-VN')} VNĐ</div>
+              <a class="mt-2 inline-block text-sm text-blue-600" href="order.html?id=${o.id}">Xem chi tiết</a>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch (e) { container.innerHTML = '<p class="text-red-500">Lỗi tải dữ liệu.</p>'; }
+})();
+</script>
+
+<!-- seed roles example (run at startup) -->
+using (var scope = app.Services.CreateScope()) {
+  var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+  if(!await roleMgr.RoleExistsAsync("Admin")) await roleMgr.CreateAsync(new IdentityRole("Admin"));
+  // assign user to role via UserManager
+}
+
+</body>
+</html>

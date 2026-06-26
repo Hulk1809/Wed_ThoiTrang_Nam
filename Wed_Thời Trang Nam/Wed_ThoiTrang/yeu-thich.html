@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop - Sản Phẩm Yêu Thích</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .product-card {
+      border-radius: 1rem;
+      border: 1px solid #e5e7eb;
+      background: linear-gradient(135deg,#ffffff,#f9fafb);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      overflow: hidden;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(15,23,42,0.18);
+      border-color: rgba(248,113,113,0.9);
+    }
+    .product-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.08), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+    .product-card:hover::after { opacity: 1; }
+    .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <header class="sticky top-0 z-40 bg-white shadow-sm">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <img src="images/logo.jpg" alt="HT HOUSE" class="site-logo">
+        <span class="font-bold text-lg hidden sm:block">Shop Men's Fashion</span>
+      </a>
+      <nav class="flex items-center gap-5 text-sm font-medium text-gray-700">
+        <a href="index.html" class="hover:text-red-600">Trang chủ</a>
+        <a href="sanpham.html" class="hover:text-red-600">Sản phẩm</a>
+        <a href="bosuutap.html" class="hover:text-red-600">Bộ sưu tập</a>
+        <a href="yeu-thich.html" class="text-red-600 flex items-center gap-1 border-b-2 border-red-600 pb-0.5"><i class="far fa-heart"></i> Yêu thích</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <section class="container mx-auto px-4 max-w-5xl mb-6">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-1">Danh sách sản phẩm yêu thích</h1>
+      <p class="text-sm text-gray-600">
+        Những sản phẩm bạn đã bấm trái tim ở trang <strong>Sản phẩm</strong> sẽ được lưu lại tại đây trên trình duyệt của bạn.
+      </p>
+    </section>
+
+    <section class="container mx-auto px-4 max-w-5xl">
+      <div id="favorites-empty" class="bg-white rounded-2xl shadow-md p-6 text-sm text-gray-700 hidden">
+        <p class="mb-3">Hiện tại bạn chưa lưu sản phẩm yêu thích nào.</p>
+        <p class="text-xs text-gray-500 mb-4">
+          Hãy quay lại trang sản phẩm và bấm vào biểu tượng trái tim ở góc trên mỗi sản phẩm để thêm vào danh sách yêu thích.
+        </p>
+        <a href="sanpham.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-600 text-white text-xs font-semibold hover:bg-red-700">
+          <i class="fas fa-shirt"></i>
+          Đi xem sản phẩm để thêm vào Yêu thích
+        </a>
+      </div>
+
+      <div id="favorites-loading" class="bg-white rounded-2xl shadow-md p-6 text-sm text-gray-600">
+        Đang tải danh sách yêu thích...
+      </div>
+
+      <div id="favorites-list" class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-900 text-gray-300 py-8 text-xs mt-10">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p>© 2025 Shop Men's Fashion</p>
+      <p class="text-gray-500">Yêu thích là danh sách cá nhân trên trình duyệt của bạn.</p>
+    </div>
+  </footer>
+  <script>
+    const API_BASE_URL = "http://localhost:5281/api";
+    const API_URL = `${API_BASE_URL}/Products`;
+
+    async function loadFavoriteProducts() {
+      const emptyBlock = document.getElementById('favorites-empty');
+      const loadingBlock = document.getElementById('favorites-loading');
+      const listBlock = document.getElementById('favorites-list');
+
+      let favoriteIds = [];
+      try {
+        favoriteIds = JSON.parse(localStorage.getItem('favorites') || '[]');
+      } catch (e) {
+        favoriteIds = [];
+      }
+
+      if (!favoriteIds.length) {
+        loadingBlock.classList.add('hidden');
+        emptyBlock.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Không tải được sản phẩm');
+        const all = await res.json();
+        const favProducts = all.filter(p => favoriteIds.includes(p.id));
+
+        loadingBlock.classList.add('hidden');
+
+        if (!favProducts.length) {
+          emptyBlock.classList.remove('hidden');
+          return;
+        }
+
+        listBlock.innerHTML = favProducts.map(p => {
+          const rating = (4 + Math.random() * 1).toFixed(1);
+          const sold = Math.floor(20 + Math.random() * 180);
+          const isHot = p.discount >= 30 || (p.originalPrice && (p.originalPrice - p.price) > 200000);
+          const tag = isHot ? "HOT MEN'S PICK" : (p.discount > 0 ? 'Giảm giá' : 'New Arrival');
+          const modelInfo = p.modelInfo || 'Model: 177cm / 68kg - M size';
+          const sizeHint = p.sizeHint || 'Gợi ý size của bạn: M (1m7 - 1m75)';
+          const styleTag = p.styleTag || 'Korean Look';
+          return `
+            <div class="product-card cursor-pointer group" onclick="location.href='chitietsp.html?id=${p.id}'">
+              <div class="absolute top-2 left-2 z-10 flex items-center gap-1 text-[10px] font-semibold text-white">
+                <span class="px-2 py-0.5 rounded bg-red-600/90">Shop Mall</span>
+                <span class="px-2 py-0.5 rounded bg-pink-500/90 hidden sm:inline">Yêu thích+</span>
+              </div>
+              ${p.discount > 0 ? `<span class="absolute top-2 right-2 bg-red-600 text-white text-[11px] px-2 py-1 rounded shadow-sm">-${p.discount}%</span>` : ''}
+              <div class="relative w-full h-52 overflow-hidden">
+                <img src="${p.image}" alt="${p.name}" class="w-full h-52 object-cover transition-opacity duration-300 group-hover:opacity-0">
+                <img src="${(p.previewImages && p.previewImages[1]) || p.image}" alt="${p.name} model" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              </div>
+              <div class="p-3.5 relative z-10 bg-white/90">
+                <h3 class="text-xs md:text-sm font-medium line-clamp-2 mb-1.5 text-gray-900">${p.name}</h3>
+                <div class="flex items-baseline justify-between gap-2 mb-1">
+                  <div class="flex items-end gap-1">
+                    <span class="text-red-600 font-bold text-sm md:text-base">${p.price.toLocaleString()}đ</span>
+                    ${p.originalPrice > p.price ? `<span class="text-[11px] text-gray-400 line-through">${p.originalPrice.toLocaleString()}đ</span>` : ''}
+                  </div>
+                  <span class="text-[10px] px-2 py-1 rounded bg-yellow-50 text-yellow-700 border border-yellow-200">${tag}</span>
+                </div>
+                <div class="flex items-center justify-between text-[10px] text-gray-500 mb-1">
+                  <span class="px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200">${styleTag}</span>
+                  <span class="px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200 hidden sm:inline">FORM SLIM / OVERSIZE</span>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+                  <div class="flex items-center gap-1">
+                    <i class="fas fa-star text-yellow-400 text-[10px]"></i>
+                    <span class="font-semibold text-gray-700">${rating}</span>
+                  </div>
+                  <span>Đã bán ${sold}+</span>
+                </div>
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="flex items-center gap-1 text-green-600"><i class="fas fa-truck-fast text-[10px]"></i> Freeship từ 299k</span>
+                  <span class="px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 max-w-[80px] truncate text-right">${p.category || ''}</span>
+                </div>
+                <div class="mt-1 text-[10px] text-gray-500 flex justify-between">
+                  <span>${modelInfo}</span>
+                </div>
+                <div class="text-[10px] text-blue-600 mt-0.5">${sizeHint}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        loadingBlock.textContent = 'Lỗi: Không thể tải dữ liệu sản phẩm yêu thích.';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadFavoriteProducts);
+  </script>
+</body>
+</html>

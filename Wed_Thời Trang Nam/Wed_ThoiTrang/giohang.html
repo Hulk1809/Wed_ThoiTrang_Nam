@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giỏ Hàng - Shop Men's Fashion</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <style type="text/css">@font-face {font-family:Montserrat;font-style:normal;font-weight:400;src:url(/cf-fonts/v/montserrat/5.0.16/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:400;src:url(/cf-fonts/v/montserrat/5.0.16/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:400;src:url(/cf-fonts/v/montserrat/5.0.16/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:400;src:url(/cf-fonts/v/montserrat/5.0.16/latin-ext/wght/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:400;src:url(/cf-fonts/v/montserrat/5.0.16/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:600;src:url(/cf-fonts/v/montserrat/5.0.16/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:600;src:url(/cf-fonts/v/montserrat/5.0.16/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:600;src:url(/cf-fonts/v/montserrat/5.0.16/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:600;src:url(/cf-fonts/v/montserrat/5.0.16/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:700;src:url(/cf-fonts/v/montserrat/5.0.16/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:700;src:url(/cf-fonts/v/montserrat/5.0.16/latin-ext/wght/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:700;src:url(/cf-fonts/v/montserrat/5.0.16/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:700;src:url(/cf-fonts/v/montserrat/5.0.16/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Montserrat;font-style:normal;font-weight:700;src:url(/cf-fonts/v/montserrat/5.0.16/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    :root { --accent: #B71C1C; --accent-dark: #8B0A0A; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+      min-height: 100vh;
+      color: #111827;
+    }
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 14px 40px rgba(15,23,42,0.12);
+      padding: 1.75rem;
+    }
+    .btn {
+      transition: transform 0.18s, background 0.18s, box-shadow 0.18s;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      background: var(--accent-dark);
+      box-shadow: 0 12px 30px rgba(185,28,28,0.45);
+    }
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #e5e7eb;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .quantity-btn:hover { background: #f3f4f6; }
+    .product-image {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .product-image:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .badge-tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+    .summary-row { display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:0.4rem; }
+    .summary-row span:last-child { font-weight:600; }
+
+    .price-preview {
+      font-size: 0.78rem;
+      border-radius: 0.9rem;
+      background: linear-gradient(135deg,#0f172a,#111827);
+      color:#e5e7eb;
+      padding:0.75rem 0.8rem;
+    }
+    .price-preview strong { color:#f97316; }
+
+    .dark-cart body { background:#020617; color:#e5e7eb; }
+    .dark-cart .card { background:#020617; box-shadow:0 18px 40px rgba(15,23,42,0.85); border:1px solid #1f2937; }
+    .dark-cart .summary-row span:first-child { color:#9ca3af; }
+    .dark-cart .btn { box-shadow:none; }
+    .dark-toggle {
+      cursor:pointer;
+      font-size:0.75rem;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+    }
+    .dark-cart .dark-toggle { border-color:#4b5563; background:#111827; color:#e5e7eb; }
+
+    .popup-toast {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 50;
+      min-width: 260px;
+      max-width: 320px;
+      padding: 0.85rem 1rem;
+      border-radius: 0.9rem;
+      box-shadow: 0 18px 45px rgba(15,23,42,0.3);
+      display: none;
+    }
+    .popup-toast.success { background:#ecfdf5; color:#166534; border:1px solid #bbf7d0; }
+    .popup-toast.error { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
+    @media (max-width: 768px) {
+      .card { padding: 1.25rem; }
+      .cart-item { flex-direction: column; gap: 1rem; }
+      .btn { width: 100%; }
+      .product-image { width: 60px; height: 60px; }
+      .product-image:hover { transform: scale(1.05); }
+    }
+  </style>
+ </head>
+<body class="py-10">
+  <div id="toast" class="popup-toast animate__animated"></div>
+
+  <div class="container mx-auto px-4 max-w-6xl">
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Giỏ hàng của bạn</h1>
+        <p class="text-sm text-gray-500 mt-1">Kiểm tra lại sản phẩm, áp mã giảm và chọn phương thức giao hàng trước khi thanh toán.</p>
+      </div>
+      <a href="sanpham.html" class="hidden md:inline-flex items-center text-sm text-gray-700 hover:text-red-600">
+        <i class="fas fa-arrow-left mr-2"></i>Tiếp tục mua sắm
+      </a>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="md:col-span-2 card animate__animated animate__fadeIn">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-800">Sản phẩm trong giỏ</h2>
+          <span class="text-xs text-gray-500" id="cart-count-label"></span>
+        </div>
+        <div id="cart-items" class="space-y-4 mb-4"></div>
+        <div id="save-for-later" class="pt-4 border-t mt-4 hidden">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-semibold text-gray-800">Lưu để mua sau</h3>
+            <span class="text-xs text-gray-400">Sản phẩm sẽ được lưu trên thiết bị của bạn</span>
+          </div>
+          <div id="save-for-later-list" class="space-y-3 text-sm"></div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="card animate__animated animate__fadeInUp">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-lg font-semibold text-gray-800">Tóm tắt đơn hàng</h2>
+            <button type="button" id="cart-dark-toggle" class="dark-toggle text-gray-600">
+              <i class="fas fa-moon text-xs"></i><span>Dark mode</span>
+            </button>
+          </div>
+          <div class="mb-3">
+            <label class="text-xs text-gray-500 mb-1 block">Mã giảm giá</label>
+            <div class="flex gap-2">
+              <input id="discount-code" type="text" placeholder="Nhập mã (Shop10, FREESHIP...)" class="flex-1 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+              <button type="button" onclick="applyDiscountCode()" class="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-gray-800">Áp dụng</button>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Mã demo: <span class="font-semibold">Shop10</span> (-10%), <span class="font-semibold">FREESHIP</span> (miễn phí ship)</p>
+          </div>
+
+          <div class="mb-3">
+            <label class="text-xs text-gray-500 mb-1 block">Phương thức giao hàng</label>
+            <select id="shipping-method" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+              <option value="standard">Giao tiết kiệm (2-4 ngày) - 25.000đ</option>
+              <option value="fast">Giao nhanh (trong ngày) - 45.000đ</option>
+              <option value="pickup">Nhận tại cửa hàng Shop - Miễn phí</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="text-xs text-gray-500 mb-1 block">Phương thức thanh toán</label>
+            <div class="space-y-1 text-sm">
+              <label class="flex items-center gap-2"><input type="radio" name="payment" value="cod" checked class="text-red-600"><span>Thanh toán khi nhận hàng (COD)</span></label>
+              <label class="flex items-center gap-2"><input type="radio" name="payment" value="bank" class="text-red-600"><span>Chuyển khoản ngân hàng</span></label>
+              <label class="flex items-center gap-2"><input type="radio" name="payment" value="wallet" class="text-red-600"><span>Ví điện tử (Momo, ZaloPay...)</span></label>
+              <label class="flex items-center gap-2"><input type="radio" name="payment" value="qr" class="text-red-600"><span>Quét mã QR</span></label>
+            </div>
+          </div>
+
+          <div class="border-t pt-3 mt-3 text-sm">
+            <div class="summary-row"><span>Tạm tính</span><span id="summary-subtotal">0đ</span></div>
+            <div class="summary-row"><span>Giảm giá</span><span id="summary-discount">0đ</span></div>
+            <div class="summary-row"><span>Phí vận chuyển</span><span id="summary-shipping">0đ</span></div>
+            <div class="summary-row text-base mt-1"><span>Tổng thanh toán</span><span id="summary-total" class="text-red-600 font-bold">0đ</span></div>
+          </div>
+
+          <div id="ai-price-preview" class="price-preview mt-3 text-xs">
+            <p><span class="font-semibold">Shop Price Preview:</span> Khi áp dụng mã <strong>Shop10</strong> và giao hàng <strong>tiết kiệm</strong>, tổng dự kiến của bạn khoảng <span id="ai-price-total">0đ</span>. Hệ thống sẽ tự chọn <strong>mã tốt nhất</strong> khi bạn nhập.</p>
+          </div>
+
+          <button onclick="checkout()" class="btn bg-red-600 text-white py-3 w-full rounded-lg font-semibold mt-4 flex items-center justify-center gap-2">
+            <i class="fas fa-lock"></i>
+            Tiến hành thanh toán
+          </button>
+          <p class="text-[11px] text-gray-400 mt-2 text-center">Bằng cách tiếp tục, bạn đồng ý với <a href="#" class="underline">Điều khoản mua hàng</a> của Shop.</p>
+        </div>
+
+        <div class="card animate__animated animate__fadeInUp text-sm">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-semibold text-gray-800">Gợi ý cho bạn</h3>
+            <span class="text-xs text-gray-400">Dựa trên sản phẩm trong giỏ</span>
+          </div>
+          <div id="upsell-list" class="space-y-3"></div>
+        </div>
+
+        <div class="card animate__animated animate__fadeInUp text-xs">
+          <h3 class="font-semibold text-gray-800 mb-2 flex items-center gap-2"><i class="fas fa-comments text-red-500"></i>Shop Live Chat mini</h3>
+          <div id="cart-chat-log" class="border rounded-lg p-2 h-24 overflow-y-auto bg-gray-50 text-[11px] mb-2"></div>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <button type="button" class="px-2 py-1 rounded-full border text-[11px] chat-suggest" data-type="size">Tư vấn size</button>
+            <button type="button" class="px-2 py-1 rounded-full border text-[11px] chat-suggest" data-type="outfit">Gợi ý outfit</button>
+            <button type="button" class="px-2 py-1 rounded-full border text-[11px] chat-suggest" data-type="ship">Hỏi phí ship</button>
+          </div>
+          <input id="cart-chat-input" type="text" placeholder="Nhắn cho Shop..." class="w-full border rounded-lg px-2 py-1.5 text-[11px] focus:ring-1 focus:ring-red-500 focus:outline-none mb-1">
+          <button type="button" id="cart-chat-send" class="w-full bg-gray-900 text-white rounded-lg py-1.5 text-[11px]">Gửi</button>
+        </div>
+
+        <a href="sanpham.html" class="md:hidden inline-flex items-center justify-center text-sm text-gray-700 hover:text-red-600 w-full mt-1">
+          <i class="fas fa-arrow-left mr-2"></i>Tiếp tục mua sắm
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/tracking.js"></script>
+  <script>
+  // === CẤU HÌNH API ===
+  const API_BASE_URL = "http://localhost:5281/api";
+  function getToken() { return localStorage.getItem('token') || localStorage.getItem('jwtToken') || null; }
+
+  let currentCartItems = []; // items từ server (mỗi item có id - cartItemId)
+  const cartItemsContainer = () => document.getElementById('cart-items');
+  const checkoutBtn = () => document.querySelector('button[onclick="checkout()"]');
+  const formatVND = v => (Number(v) || 0).toLocaleString('vi-VN') + ' VNĐ';
+  const toastEl = () => document.getElementById('toast');
+  const cartCountLabel = () => document.getElementById('cart-count-label');
+
+  const discountConfigs = {
+    'Shop10': { type: 'percent', value: 10, expires: '2026-12-31' },
+    'FREESHIP': { type: 'freeship', value: 0, expires: '2026-12-31' }
+  };
+
+  let appliedDiscount = null; // {code, type, value}
+  let shippingFee = 25000; // default tiết kiệm
+
+  function showToast(message, type = 'success') {
+    const el = toastEl();
+    if (!el) return;
+    el.textContent = message;
+    el.className = `popup-toast animate__animated ${type === 'success' ? 'success animate__fadeInDown' : 'error animate__shakeX'}`;
+    el.style.display = 'block';
+    setTimeout(() => {
+      el.classList.remove('animate__fadeInDown','animate__shakeX');
+      el.classList.add('animate__fadeOut');
+      setTimeout(() => { el.style.display = 'none'; el.classList.remove('animate__fadeOut'); }, 300);
+    }, 2000);
+  }
+
+  async function fetchCart() {
+    const token = getToken(); if (!token) return null;
+    try {
+      const res = await fetch(`${API_BASE_URL}/Cart`, { headers: { 'Authorization': 'Bearer ' + token }});
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (e) { console.warn(e); return null; }
+  }
+
+  async function loadCart() {
+    const token = getToken();
+    if (!token) {
+      cartItemsContainer().innerHTML =
+        '<p class="text-gray-500 text-center">Bạn cần <a href="dang-nhap.html" class="text-red-600 font-bold">đăng nhập</a> để xem giỏ hàng.</p>';
+      updateSummary(0);
+      if (cartCountLabel()) cartCountLabel().textContent = '';
+      currentCartItems = [];
+      return;
+    }
+
+    const btn = checkoutBtn();
+    if (btn) { btn.disabled = true; btn.classList.add('opacity-60'); }
+    cartItemsContainer().innerHTML = '<p id="cart-loading" class="text-gray-500 text-center">Đang tải giỏ hàng...</p>';
+
+    try {
+      const cart = await fetchCart();
+      if (!cart || !Array.isArray(cart.items)) {
+        cartItemsContainer().innerHTML = '<p class="text-red-500 text-center">Không tải được giỏ hàng.</p>';
+        currentCartItems = [];
+        if (btn) { btn.disabled = false; btn.classList.remove('opacity-60'); }
+        return;
+      }
+      currentCartItems = cart.items;
+      renderCart(currentCartItems);
+    } catch (err) {
+      console.error('Lỗi khi tải giỏ hàng:', err);
+      cartItemsContainer().innerHTML = '<p class="text-red-500 text-center">Lỗi tải giỏ hàng. Vui lòng thử lại.</p>';
+      currentCartItems = [];
+    } finally {
+      if (btn) { btn.disabled = false; btn.classList.remove('opacity-60'); }
+    }
+  }
+
+  function renderCart(items) {
+    const container = cartItemsContainer();
+    container.innerHTML = '';
+    let subtotal = 0;
+    if (!items || items.length === 0) {
+      container.innerHTML = '<p class="text-gray-500 text-center">Giỏ hàng của bạn trống.</p>';
+      if (cartCountLabel()) cartCountLabel().textContent = '0 sản phẩm';
+      updateSummary(0);
+      return;
+    }
+
+    items.forEach(item => {
+      const product = item.product || {};
+      const qty = Number(item.quantity) || 1;
+      const price = Number(product.price) || 0;
+      const itemTotal = price * qty;
+      subtotal += itemTotal;
+
+      const cartItem = document.createElement('div');
+      cartItem.className = 'cart-item flex justify-between items-center p-4 border rounded-lg bg-white hover:bg-gray-50 transition';
+      // IMPORTANT: use cart item id (item.id) for controls to avoid ambiguity when same productId used multiple times
+      cartItem.innerHTML = `
+        <div class="flex items-center gap-4">
+          <img src="${product.image || 'images/default-product.jpg'}" alt="${product.name || ''}" class="product-image">
+          <div>
+            <h3 class="text-lg font-medium text-gray-800">${product.name || 'Sản phẩm'}</h3>
+            <p class="text-sm text-gray-600 mb-1">Size: ${item.size || '-'} · Màu: ${item.color || '-'}</p>
+            <span class="badge-tag">Mã: ${product.sku || product.id || '-'}</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <button class="quantity-btn" data-action="dec" data-cart-id="${item.id}">-</button>
+            <span class="text-sm font-medium qty-display" data-cart-id="${item.id}">${qty}</span>
+            <button class="quantity-btn" data-action="inc" data-cart-id="${item.id}">+</button>
+          </div>
+          <p class="text-sm font-medium text-red-600">${formatVND(itemTotal)}</p>
+          <button class="text-red-600 hover:text-red-800 btn-remove" data-cart-id="${item.id}" title="Xóa">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      `;
+      container.appendChild(cartItem);
+    });
+    if (cartCountLabel()) cartCountLabel().textContent = `${items.length} sản phẩm`;
+    updateSummary(subtotal);
+    renderUpsell(items);
+    renderSaveForLater();
+  }
+
+  function updateSummary(subtotal) {
+    const subtotalEl = document.getElementById('summary-subtotal');
+    const discountEl = document.getElementById('summary-discount');
+    const shipEl = document.getElementById('summary-shipping');
+    const totalEl = document.getElementById('summary-total');
+    if (!subtotalEl || !discountEl || !shipEl || !totalEl) return;
+
+    let discountAmount = 0;
+    if (appliedDiscount && appliedDiscount.type === 'percent') {
+      discountAmount = Math.round(subtotal * (appliedDiscount.value / 100));
+    }
+
+    let ship = shippingFee || 0;
+    if (appliedDiscount && appliedDiscount.type === 'freeship') ship = 0;
+
+    const total = Math.max(subtotal - discountAmount, 0) + ship;
+
+    subtotalEl.textContent = formatVND(subtotal);
+    discountEl.textContent = discountAmount > 0 ? '- ' + formatVND(discountAmount) : '0 VNĐ';
+    shipEl.textContent = ship > 0 ? formatVND(ship) : '0 VNĐ';
+    totalEl.textContent = formatVND(total);
+
+    const aiTotalEl = document.getElementById('ai-price-total');
+    if (aiTotalEl) {
+      const previewShip = 25000;
+      const bestDiscount = appliedDiscount && appliedDiscount.type === 'percent' ? discountAmount : Math.round(subtotal * 0.1);
+      const previewTotal = Math.max(subtotal - bestDiscount, 0) + previewShip;
+      aiTotalEl.textContent = formatVND(previewTotal);
+    }
+  }
+
+  // update quantity for a specific cart item id (not productId)
+  async function updateQuantityByCartId(cartItemId, change) {
+    const token = getToken();
+    if (!token) { alert('Bạn cần đăng nhập để thay đổi giỏ hàng'); window.location.href = 'dang-nhap.html'; return; }
+
+    const item = currentCartItems.find(i => String(i.id) === String(cartItemId));
+    if (!item) { await loadCart(); return; }
+
+    const currentQty = Number(item.quantity) || 1;
+    const nextQty = currentQty + change;
+    if (nextQty <= 0) {
+      // remove specific cart item
+      await removeItem(cartItemId);
+      return;
+    }
+
+    // Prefer calling backend with productId + quantity delta + variant info if API supports it
+    const payload = {
+      productId: item.productId || item.product?.id,
+      quantity: change,
+      size: item.size || null,
+      color: item.color || null
+    };
+
+    try {
+      const resp = await fetch(`${API_BASE_URL}/Cart/add`, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(payload)
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        showToast('Lỗi cập nhật số lượng: ' + txt, 'error');
+        return;
+      }
+      // reload cart to get authoritative state
+      await loadCart();
+    } catch (e) {
+      console.error(e);
+      showToast('Lỗi kết nối. Vui lòng thử lại.', 'error');
+    }
+  }
+
+  async function removeItem(cartItemId) {
+    if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+    const token = getToken();
+    if (!token) { alert('Bạn cần đăng nhập để xóa sản phẩm'); window.location.href = 'dang-nhap.html'; return; }
+    try {
+      const res = await fetch(`${API_BASE_URL}/Cart/remove/${cartItemId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!res.ok) {
+        showToast('Không thể xóa sản phẩm.', 'error');
+        return;
+      }
+      await loadCart();
+      showToast('Đã xóa sản phẩm khỏi giỏ.', 'success');
+    } catch (e) {
+      console.error(e);
+      showToast('Lỗi kết nối khi xóa.', 'error');
+    }
+  }
+
+  async function checkout() {
+    const token = getToken();
+    if (!token) { showToast('Bạn cần đăng nhập để thanh toán!', 'error'); window.location.href = 'dang-nhap.html'; return; }
+    await loadCart();
+    if (!currentCartItems || currentCartItems.length === 0) { showToast('Giỏ hàng trống!', 'error'); return; }
+    window.location.href = 'thanhtoan.html';
+  }
+
+  // delegate using cart-item id
+  document.addEventListener('click', function(e) {
+    const dec = e.target.closest('button[data-action="dec"]');
+    if (dec) { const cartId = dec.dataset.cartId; updateQuantityByCartId(cartId, -1); return; }
+    const inc = e.target.closest('button[data-action="inc"]');
+    if (inc) { const cartId = inc.dataset.cartId; updateQuantityByCartId(cartId, +1); return; }
+    const rem = e.target.closest('.btn-remove');
+    if (rem) { const cartId = rem.dataset.cartId; removeItem(cartId); return; }
+
+    const chip = e.target.closest('.chat-suggest');
+    if (chip) {
+      const type = chip.dataset.type;
+      handleChatSuggest(type);
+      return;
+    }
+  });
+
+  document.addEventListener('change', function(e) {
+    const shipSel = e.target.closest('#shipping-method');
+    if (shipSel) {
+      const val = shipSel.value;
+      if (val === 'standard') shippingFee = 25000;
+      else if (val === 'fast') shippingFee = 45000;
+      else shippingFee = 0;
+      const subtotal = currentCartItems.reduce((sum, item) => sum + (Number(item.product?.price || 0) * (Number(item.quantity) || 1)), 0);
+      updateSummary(subtotal);
+    }
+  });
+
+  function applyDiscountCode() {
+    const input = document.getElementById('discount-code');
+    if (!input) return;
+    const code = (input.value || '').trim().toUpperCase();
+    if (!code) { showToast('Vui lòng nhập mã giảm giá.', 'error'); return; }
+    const conf = discountConfigs[code];
+    if (!conf) { showToast('Mã giảm giá không hợp lệ.', 'error'); return; }
+    const now = new Date();
+    if (conf.expires && new Date(conf.expires) < now) { showToast('Mã giảm giá đã hết hạn.', 'error'); return; }
+    appliedDiscount = { code, type: conf.type, value: conf.value };
+    const subtotal = currentCartItems.reduce((sum, item) => sum + (Number(item.product?.price || 0) * (Number(item.quantity) || 1)), 0);
+    updateSummary(subtotal);
+    showToast('Áp dụng mã thành công!', 'success');
+  }
+
+  // Dark mode toggle chỉ cho trang giỏ hàng
+  const DARK_KEY = 'Shop_cart_dark';
+  function applyDarkFromStorage() {
+    const isDark = localStorage.getItem(DARK_KEY) === '1';
+    const html = document.documentElement;
+    const btn = document.getElementById('cart-dark-toggle');
+    if (isDark) {
+      html.classList.add('dark-cart');
+      if (btn) btn.innerHTML = '<i class="fas fa-sun text-xs"></i><span>Light mode</span>';
+    } else {
+      html.classList.remove('dark-cart');
+      if (btn) btn.innerHTML = '<i class="fas fa-moon text-xs"></i><span>Dark mode</span>';
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    if (e.target.id === 'cart-dark-toggle' || e.target.closest('#cart-dark-toggle')) {
+      const isDark = localStorage.getItem(DARK_KEY) === '1';
+      localStorage.setItem(DARK_KEY, isDark ? '0' : '1');
+      applyDarkFromStorage();
+    }
+  });
+
+  // Live chat mini trong giỏ hàng
+  function appendChatMessage(sender, text) {
+    const log = document.getElementById('cart-chat-log');
+    if (!log || !text) return;
+    const row = document.createElement('div');
+    row.className = 'mb-1';
+    row.innerHTML = `<span class="font-semibold">${sender}:</span> <span>${text}</span>`;
+    log.appendChild(row);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function handleChatSuggest(type) {
+    let botText = '';
+    if (type === 'size') {
+      botText = 'Bạn cao từ 1m65-1m72, nặng 55-65kg có thể chọn size M/L. Nếu vai rộng nên ưu tiên L để mặc thoải mái.';
+    } else if (type === 'outfit') {
+      botText = 'Gợi ý: 1 áo sơ mi trắng + quần tây đen + blazer tối màu, thêm thắt lưng da đen là đã đủ lịch sự đi làm/hẹn hò.';
+    } else if (type === 'ship') {
+      botText = 'Phí ship nội thành thường 25.000đ - 35.000đ. Với đơn trên 599.000đ Shop thường có ưu đãi freeship theo chương trình.';
+    }
+    appendChatMessage('Shop', botText);
+  }
+
+  function initCartChat() {
+    const input = document.getElementById('cart-chat-input');
+    const sendBtn = document.getElementById('cart-chat-send');
+    if (!input || !sendBtn) return;
+    sendBtn.addEventListener('click', () => {
+      const text = (input.value || '').trim();
+      if (!text) return;
+      appendChatMessage('Bạn', text);
+      input.value = '';
+      setTimeout(() => {
+        appendChatMessage('Shop', 'Cảm ơn bạn. Shop đã ghi nhận yêu cầu, nhân viên sẽ tư vấn kỹ hơn ở bước thanh toán.');
+      }, 500);
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendBtn.click();
+      }
+    });
+  }
+
+  function getSaveForLater() {
+    try { return JSON.parse(localStorage.getItem('Shop_save_for_later') || '[]'); } catch { return []; }
+  }
+  function setSaveForLater(list) { localStorage.setItem('Shop_save_for_later', JSON.stringify(list || [])); }
+  function moveToSaveForLater(product) {
+    const list = getSaveForLater();
+    list.push(product);
+    setSaveForLater(list);
+    renderSaveForLater();
+  }
+  function renderSaveForLater() {
+    const container = document.getElementById('save-for-later-list');
+    const wrapper = document.getElementById('save-for-later');
+    if (!container || !wrapper) return;
+    const list = getSaveForLater();
+    if (!list.length) { wrapper.classList.add('hidden'); return; }
+    wrapper.classList.remove('hidden');
+    container.innerHTML = '';
+    list.forEach((p, idx) => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center justify-between';
+      row.innerHTML = `
+        <div class="flex items-center gap-3">
+          <img src="${p.image || 'images/default-product.jpg'}" class="w-10 h-10 rounded-md object-cover"/>
+          <div>
+            <p class="text-sm font-medium text-gray-800 line-clamp-1">${p.name || 'Sản phẩm'}</p>
+            <p class="text-xs text-gray-500">${formatVND(p.price || 0)}</p>
+          </div>
+        </div>
+        <button data-sf-index="${idx}" class="text-xs text-red-600 hover:underline">Xóa</button>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  document.addEventListener('click', function(e) {
+    const sfBtn = e.target.closest('button[data-sf-index]');
+    if (sfBtn) {
+      const idx = Number(sfBtn.dataset.sfIndex);
+      const list = getSaveForLater();
+      list.splice(idx,1);
+      setSaveForLater(list);
+      renderSaveForLater();
+    }
+  });
+
+  function renderUpsell(items) {
+    const upsellEl = document.getElementById('upsell-list');
+    if (!upsellEl) return;
+    upsellEl.innerHTML = '';
+    if (!items || !items.length) {
+      upsellEl.innerHTML = '<p class="text-gray-500">Thêm sản phẩm vào giỏ để nhận gợi ý.</p>';
+      return;
+    }
+    const sample = items.slice(0,2);
+    sample.forEach(it => {
+      const p = it.product || {};
+      const row = document.createElement('div');
+      row.className = 'flex items-center justify-between';
+      row.innerHTML = `
+        <div class="flex items-center gap-3">
+          <img src="${p.image || 'images/default-product.jpg'}" class="w-10 h-10 rounded-md object-cover"/>
+          <div>
+            <p class="text-sm font-medium text-gray-800 line-clamp-1">${p.name || 'Sản phẩm Shop'}</p>
+            <p class="text-xs text-gray-500">Gợi ý phối với quần/áo hiện tại</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-sm font-semibold text-red-600">${formatVND(p.price || 0)}</p>
+          <a href="chitietsp.html?id=${p.id || ''}" class="text-xs text-gray-700 hover:text-red-600">Xem chi tiết</a>
+        </div>
+      `;
+      upsellEl.appendChild(row);
+    });
+  }
+
+  window.addEventListener('load', () => {
+    loadCart();
+    renderSaveForLater();
+    applyDarkFromStorage();
+    initCartChat();
+  });
+  </script>
+</body>
+</html>

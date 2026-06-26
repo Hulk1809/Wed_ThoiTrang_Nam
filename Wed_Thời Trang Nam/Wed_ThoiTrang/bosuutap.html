@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop - Bộ Sưu Tập 2025</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-gray-50">
+  <header class="sticky top-0 z-40 bg-white shadow-sm">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <img src="images/logo.jpg" alt="HT HOUSE" class="site-logo">
+        <span class="font-bold text-lg hidden sm:block">Shop Men's Fashion</span>
+      </a>
+      <nav class="flex items-center gap-5 text-sm font-medium text-gray-700">
+        <a href="index.html" class="hover:text-red-600">Trang chủ</a>
+        <a href="sanpham.html" class="hover:text-red-600">Sản phẩm</a>
+        <a href="bosuutap.html" class="text-red-600 border-b-2 border-red-600 pb-0.5">Bộ sưu tập</a>
+        <a href="yeu-thich.html" class="hover:text-red-600 flex items-center gap-1"><i class="far fa-heart"></i> Yêu thích</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <section class="container mx-auto px-4 max-w-6xl">
+      <p class="text-xs uppercase tracking-[0.3em] text-gray-400 mb-1">Shop lookbook</p>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">Men's New Collection 2025</h1>
+      <p class="text-sm md:text-base text-gray-600 max-w-2xl mb-6">
+        Bộ sưu tập tổng hợp những set đồ được Shop mix sẵn theo chủ đề: đi làm, đi chơi, hẹn hò, cuối tuần.
+        Bạn có thể xem nhanh từng look và bấm để mở sản phẩm tương ứng.
+      </p>
+    </section>
+
+    <section class="container mx-auto px-4 max-w-6xl grid md:grid-cols-3 gap-6 mb-10">
+      <!-- Look 1 -->
+      <article class="bg-white rounded-3xl shadow-md overflow-hidden flex flex-col">
+        <div class="relative h-60 overflow-hidden">
+          <img src="images/product32.jpg" class="w-full h-full object-cover" alt="Office look" />
+          <span class="absolute top-3 left-3 bg-black/70 text-white text-[11px] px-2 py-1 rounded-full">Office / Smart</span>
+        </div>
+        <div class="p-4 flex-1 flex flex-col text-sm">
+          <h2 class="font-semibold text-gray-900 mb-1">Blazer + Kaki + Sơ mi</h2>
+          <p class="text-gray-600 text-xs mb-2">
+            Set lịch sự cho đi làm, gặp đối tác. Dùng blazer xanh navy, quần kaki ống đứng và sơ mi trắng.
+          </p>
+          <ul class="text-xs text-gray-500 mb-3 list-disc list-inside">
+            <li><a href="sanpham.html?cat=áo blazer" class="text-red-600 hover:underline">Áo blazer</a></li>
+            <li><a href="sanpham.html?cat=quan dai kaki" class="text-red-600 hover:underline">Quần dài kaki</a></li>
+            <li><a href="sanpham.html?cat=áo somi" class="text-red-600 hover:underline">Áo sơ mi</a></li>
+          </ul>
+          <button onclick="location.href='sanpham.html?cat=ao-blazer'" class="mt-auto w-full bg-black text-white text-xs font-semibold py-2 rounded-2xl hover:bg-gray-900 flex items-center justify-center gap-2">
+            Xem các mẫu tương tự <i class="fas fa-arrow-right text-[11px]"></i>
+          </button>
+        </div>
+      </article>
+
+      <!-- Look 2 -->
+      <article class="bg-white rounded-3xl shadow-md overflow-hidden flex flex-col">
+        <div class="relative h-60 overflow-hidden">
+          <img src="images/product1.jpg" class="w-full h-full object-cover" alt="Street look" />
+          <span class="absolute top-3 left-3 bg-black/70 text-white text-[11px] px-2 py-1 rounded-full">Street / Casual</span>
+        </div>
+        <div class="p-4 flex-1 flex flex-col text-sm">
+          <h2 class="font-semibold text-gray-900 mb-1">Áo khoác gió + Jeans + Sneaker</h2>
+          <p class="text-gray-600 text-xs mb-2">
+            Outfit đi chơi cuối tuần: khoác gió 2 lớp, quần jeans slim và sneaker trắng.
+          </p>
+          <ul class="text-xs text-gray-500 mb-3 list-disc list-inside">
+            <li><a href="sanpham.html?cat=áo khoác" class="text-red-600 hover:underline">Áo khoác</a></li>
+            <li><a href="sanpham.html?cat=quần jeans" class="text-red-600 hover:underline">Quần jeans</a></li>
+            <li><a href="sanpham.html?cat=phụ kiện" class="text-red-600 hover:underline">Giày sneaker</a></li>
+          </ul>
+          <button onclick="location.href='sanpham.html?cat=áo khoác'" class="mt-auto w-full bg-black text-white text-xs font-semibold py-2 rounded-2xl hover:bg-gray-900 flex items-center justify-center gap-2">
+            Mua ngay set tương tự <i class="fas fa-arrow-right text-[11px]"></i>
+          </button>
+        </div>
+      </article>
+
+      <!-- Look 3 -->
+      <article class="bg-white rounded-3xl shadow-md overflow-hidden flex flex-col">
+        <div class="relative h-60 overflow-hidden">
+          <img src="images/product38.jpg" class="w-full h-full object-cover" alt="Date look" />
+          <span class="absolute top-3 left-3 bg-black/70 text-white text-[11px] px-2 py-1 rounded-full">Date / Cafe</span>
+        </div>
+        <div class="p-4 flex-1 flex flex-col text-sm">
+          <h2 class="font-semibold text-gray-900 mb-1">Polo + Kaki + Giày da</h2>
+          <p class="text-gray-600 text-xs mb-2">
+            Phong cách nhẹ nhàng, phù hợp đi hẹn hò hoặc cafe cuối tuần.
+          </p>
+          <ul class="text-xs text-gray-500 mb-3 list-disc list-inside">
+            <li><a href="sanpham.html?cat=áo polo" class="text-red-600 hover:underline">Áo polo</a></li>
+            <li><a href="sanpham.html?cat=quan dai kaki" class="text-red-600 hover:underline">Quần kaki</a></li>
+            <li><a href="sanpham.html?cat=phụ kiện" class="text-red-600 hover:underline">Giày / thắt lưng</a></li>
+          </ul>
+          <button onclick="location.href='sanpham.html?cat=áo polo'" class="mt-auto w-full bg-black text-white text-xs font-semibold py-2 rounded-2xl hover:bg-gray-900 flex items-center justify-center gap-2">
+            Xem polo đang bán chạy <i class="fas fa-arrow-right text-[11px]"></i>
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <section class="container mx-auto px-4 max-w-6xl mb-16">
+      <div class="bg-white rounded-3xl shadow-md p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.3em] text-gray-400 mb-1">Tip chọn outfit</p>
+          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-1">Xem bộ sưu tập, sau đó lọc theo size & tầm giá</h2>
+          <p class="text-xs md:text-sm text-gray-600 max-w-xl">
+            Từ mỗi look bạn thích, hãy bấm vào danh mục tương ứng để qua trang sản phẩm `sanpham.html`, sau đó dùng bộ lọc theo size, giá, phong cách để chốt món phù hợp với bạn.
+          </p>
+        </div>
+        <button onclick="location.href='sanpham.html'" class="px-4 py-2 rounded-full bg-red-600 text-white text-xs md:text-sm font-semibold hover:bg-red-700 flex items-center gap-2">
+          Đến trang sản phẩm
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-900 text-gray-300 py-8 text-xs">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p>© 2025 Shop Men's Fashion</p>
+      <p class="text-gray-500">Bộ sưu tập chỉ là gợi ý. Giá & tồn kho xem tại trang sản phẩm.</p>
+    </div>
+  </footer>
+</body>
+</html>

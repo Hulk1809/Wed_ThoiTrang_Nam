@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Tài khoản của tôi - Shop</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg: #020617;
+      --card: rgba(15,23,42,0.9);
+      --border: rgba(148,163,184,0.5);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #f97373;
+    }
+    body.dark {
+      background: radial-gradient(circle at top left,#0f172a 0,#020617 45%,#000 100%);
+      color: var(--text);
+    }
+    body.light {
+      background: #f3f4f6;
+      color: #111827;
+    }
+    .orb-bg{position:fixed;inset:0;pointer-events:none;z-index:-1;background:
+      radial-gradient(circle at 10% 20%,rgba(239,68,68,0.25),transparent 55%),
+      radial-gradient(circle at 90% 80%,rgba(56,189,248,0.22),transparent 55%),
+      radial-gradient(circle at 50% 10%,rgba(34,197,94,0.25),transparent 55%);
+      filter:blur(12px)}
+    .card-glass{
+      background: var(--card);
+      border-radius: 1.25rem;
+      border:1px solid var(--border);
+      box-shadow:0 30px 80px rgba(15,23,42,0.9);
+      backdrop-filter: blur(20px);
+    }
+    body.light .card-glass{
+      background:#ffffff;
+      box-shadow:0 20px 50px rgba(15,23,42,0.15);
+      border-color:rgba(209,213,219,1);
+    }
+    .badge-pill{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;border-radius:999px;padding:3px 10px;border:1px solid rgba(148,163,184,0.7);color:var(--muted)}
+    .menu-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.75rem;font-size:.875rem;cursor:pointer;transition:.2s}
+    .menu-item:hover{background:rgba(148,163,184,0.12)}
+    .menu-item.active{background:linear-gradient(135deg,#f97373,#fb923c);color:#111827}
+    body.light .menu-item:hover{background:#e5e7eb}
+    .avatar-ring{position:relative;display:inline-flex}
+    .avatar-ring::before{content:"";position:absolute;inset:-3px;border-radius:999px;border:2px solid rgba(248,113,113,0.6);opacity:.7}
+    .chip{border-radius:999px;padding:.15rem .6rem;font-size:.7rem;border:1px solid rgba(148,163,184,0.6)}
+    .timeline-dot{width:9px;height:9px;border-radius:999px;background:#6b7280}
+    .timeline-dot.active{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,0.3)}
+    .password-dot{letter-spacing:.18em}
+    .strength-bar{height:5px;border-radius:999px;background:#1f2937;overflow:hidden}
+    .strength-fill{height:100%;width:0%;transition:width .25s,background .25s}
+    body.light .strength-bar{background:#e5e7eb}
+    .accordion-header{cursor:pointer}
+    .accordion-body{display:none}
+    .accordion-body.open{display:block}
+    @media(max-width:900px){
+      #layout{flex-direction:column}
+    }
+  </style>
+</head>
+<body class="dark min-h-screen">
+  <div class="orb-bg"></div>
+  <div class="max-w-6xl mx-auto px-4 py-6" id="layout">
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 md:mr-6 mb-4 md:mb-0 card-glass p-4 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="badge-pill">Shop · ACCOUNT</span>
+          <button id="theme-toggle" class="chip flex items-center gap-1 text-xs"><i class="fa-solid fa-moon"></i><span id="theme-label">Dark</span></button>
+        </div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="avatar-ring">
+            <div id="avatar" class="w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold bg-gradient-to-br from-slate-800 to-slate-900 text-white">GU</div>
+          </div>
+          <div>
+            <div id="sidebar-name" class="text-sm font-semibold">Khách Shop</div>
+            <div id="vip-badge" class="text-[11px] text-emerald-300">Thành viên mới</div>
+          </div>
+        </div>
+        <nav class="space-y-1 text-sm" id="account-menu">
+          <div class="menu-item active" data-target="panel-profile"><i class="fa-solid fa-user"></i><span>Thông tin cá nhân</span></div>
+          <div class="menu-item" data-target="panel-security"><i class="fa-solid fa-shield-halved"></i><span>Bảo mật & mật khẩu</span></div>
+          <div class="menu-item" data-target="panel-address"><i class="fa-solid fa-location-dot"></i><span>Địa chỉ giao hàng</span></div>
+          <div class="menu-item" data-target="panel-orders"><i class="fa-solid fa-receipt"></i><span>Đơn hàng của tôi</span></div>
+          <div class="menu-item" data-target="panel-points"><i class="fa-solid fa-gem"></i><span>Điểm & hạng VIP</span></div>
+          <div class="menu-item" data-target="panel-sessions"><i class="fa-solid fa-laptop"></i><span>Phiên đăng nhập</span></div>
+        </nav>
+      </div>
+      <div class="mt-4 flex items-center justify-between text-xs text-gray-400">
+        <a href="index.html" class="hover:underline flex items-center gap-1"><i class="fa-solid fa-store"></i><span>Trang chủ</span></a>
+        <button id="logout" class="px-3 py-1 rounded-full bg-red-600 text-white text-xs flex items-center gap-1"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Đăng xuất</span></button>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 space-y-4">
+      <!-- Profile card -->
+      <section id="panel-profile" class="card-glass p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h1 class="text-lg font-semibold mb-1">Thông tin cá nhân</h1>
+            <p class="text-xs text-gray-400">Quản lý thông tin cơ bản và avatar của bạn.</p>
+          </div>
+          <button id="btn-edit-profile" class="chip flex items-center gap-1 text-xs"><i class="fa-solid fa-pen"></i><span>Chỉnh sửa</span></button>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <div class="mb-2"><span class="text-gray-400">Họ tên</span><div id="name" class="font-semibold">-</div></div>
+            <div class="mb-2"><span class="text-gray-400">Email</span><div id="email" class="break-all">-</div></div>
+            <div class="mb-2"><span class="text-gray-400">Số điện thoại</span><div id="phone">-</div></div>
+          </div>
+          <div>
+            <div class="mb-2"><span class="text-gray-400">Địa chỉ</span><div id="address" class="text-sm">-</div></div>
+            <div class="mb-2"><span class="text-gray-400">Ngày sinh</span><div id="dob">-</div></div>
+            <div class="mb-2"><span class="text-gray-400">Giới tính</span><div id="gender">-</div></div>
+            <div class="mb-2"><span class="text-gray-400">Mật khẩu</span><div class="password-dot">••••••••</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Security & email/phone verification -->
+      <section id="panel-security" class="card-glass p-5 hidden">
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div class="flex-1">
+            <h2 class="text-lg font-semibold mb-2">Bảo mật & Đổi mật khẩu</h2>
+            <p class="text-xs text-gray-400 mb-3">Thiết lập mật khẩu mạnh hơn và bật bảo mật 2 lớp.</p>
+            <form id="form-change-password" class="space-y-3 text-sm">
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">Mật khẩu hiện tại</label>
+                <input type="password" id="old-password" class="w-full px-3 py-2 rounded border bg-transparent" placeholder="Nhập mật khẩu cũ"/>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">Mật khẩu mới</label>
+                <div class="relative">
+                  <input type="password" id="new-password" class="w-full px-3 py-2 pr-9 rounded border bg-transparent" placeholder="Nhập mật khẩu mới"/>
+                  <button type="button" id="toggle-new-pass" class="absolute inset-y-0 right-0 pr-3 text-xs text-gray-400"><i class="far fa-eye"></i></button>
+                </div>
+                <div class="strength-bar mt-1"><div id="pw-strength-fill" class="strength-fill"></div></div>
+                <div id="pw-strength-text" class="text-[11px] text-gray-400 mt-1"></div>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">Xác nhận mật khẩu mới</label>
+                <input type="password" id="confirm-password" class="w-full px-3 py-2 rounded border bg-transparent" placeholder="Nhập lại mật khẩu mới"/>
+              </div>
+              <div id="change-pass-error" class="text-xs text-red-400"></div>
+              <button type="submit" class="mt-1 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-xs font-semibold text-gray-900">
+                <span>Lưu mật khẩu</span>
+              </button>
+            </form>
+          </div>
+          <div class="w-full md:w-64 border-t md:border-t-0 md:border-l border-gray-700 md:pl-4 pt-4 md:pt-0 text-xs">
+            <h3 class="font-semibold mb-2">Xác minh & 2FA</h3>
+            <div class="mb-2 flex items-center justify-between">
+              <span>Email</span>
+              <span id="email-verify-status" class="chip text-[10px]">Chưa xác minh</span>
+            </div>
+            <div class="mb-2 flex items-center justify-between">
+              <span>Số điện thoại</span>
+              <span id="phone-verify-status" class="chip text-[10px]">Chưa xác minh</span>
+            </div>
+            <button id="btn-send-verify" class="text-[11px] mt-1 underline text-amber-300">Gửi lại mã OTP xác minh</button>
+            <div class="flex justify-between text-[11px] text-gray-400 mt-1">
+              <span id="verify-hint"></span>
+              <span id="verify-countdown"></span>
+            </div>
+            <div class="mt-3 flex items-center justify-between">
+              <span>Xác thực 2 bước (2FA)</span>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="toggle-2fa" class="hidden"/>
+                <span class="w-9 h-5 flex items-center bg-gray-600 rounded-full p-0.5"><span id="dot-2fa" class="w-4 h-4 bg-gray-300 rounded-full transform transition"></span></span>
+              </label>
+            </div>
+            <p class="text-[11px] text-gray-500 mt-2">Khi bật 2FA, Shop sẽ yêu cầu mã xác minh mỗi khi đăng nhập trên thiết bị mới.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Address manager -->
+      <section id="panel-address" class="card-glass p-5 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-lg font-semibold mb-1">Địa chỉ giao hàng</h2>
+            <p class="text-xs text-gray-400">Quản lý nhiều địa chỉ và chọn địa chỉ mặc định.</p>
+          </div>
+          <button id="btn-add-address" class="chip text-xs flex items-center gap-1"><i class="fa-solid fa-plus"></i><span>Thêm địa chỉ</span></button>
+        </div>
+        <div id="address-list" class="space-y-2 text-sm"></div>
+      </section>
+
+      <!-- Orders / quick links -->
+      <section id="panel-orders" class="card-glass p-5 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold">Đơn hàng & Liên kết nhanh</h2>
+          <a href="lichsu.html" class="text-xs underline text-sky-300">Xem lịch sử đơn hàng chi tiết</a>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4 text-sm mb-4">
+          <div class="space-y-2">
+            <a href="giohang.html" class="menu-item"><i class="fa-solid fa-cart-shopping"></i><span>Giỏ hàng</span></a>
+            <a href="yeu-thich.html" class="menu-item"><i class="fa-solid fa-heart"></i><span>Danh sách yêu thích</span></a>
+            <a href="uudai.html" class="menu-item"><i class="fa-solid fa-ticket"></i><span>Voucher của tôi</span></a>
+          </div>
+          <div class="space-y-2">
+            <button class="menu-item" disabled><i class="fa-solid fa-credit-card"></i><span>Phương thức thanh toán (sắp ra mắt)</span></button>
+            <button class="menu-item" disabled><i class="fa-solid fa-shield"></i><span>Bảo hiểm đơn hàng (sắp ra mắt)</span></button>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold mb-2">Lịch sử đơn hàng gần đây</h3>
+          <div id="orders" class="text-sm text-gray-300">Đang tải lịch sử đơn hàng…</div>
+        </div>
+      </section>
+
+      <!-- Points / VIP -->
+      <section id="panel-points" class="card-glass p-5 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-lg font-semibold mb-1">Điểm thưởng & hạng thành viên</h2>
+            <p class="text-xs text-gray-400">Mua càng nhiều, ưu đãi càng lớn.</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4 text-sm">
+          <div class="border border-gray-700 rounded-xl p-3 flex flex-col justify-between">
+            <div>
+              <div class="text-xs text-gray-400 mb-1">Điểm hiện tại</div>
+              <div id="point-balance" class="text-2xl font-semibold text-amber-300">0</div>
+            </div>
+            <div class="text-[11px] text-gray-500 mt-2">Mỗi 10.000đ chi tiêu = 1 điểm. Điểm dùng để đổi voucher.</div>
+          </div>
+          <div class="border border-gray-700 rounded-xl p-3">
+            <div class="text-xs text-gray-400 mb-1">Hạng của bạn</div>
+            <div id="tier-name" class="font-semibold mb-1">Member</div>
+            <div id="tier-progress" class="text-[11px] text-gray-400">Mua thêm 0đ để lên hạng Silver.</div>
+          </div>
+          <div class="border border-gray-700 rounded-xl p-3">
+            <div class="text-xs text-gray-400 mb-1">Lịch sử tăng điểm</div>
+            <ul id="point-history" class="text-[11px] space-y-1 max-h-24 overflow-auto"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sessions / activity -->
+      <section id="panel-sessions" class="card-glass p-5 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-lg font-semibold mb-1">Hoạt động & phiên đăng nhập</h2>
+            <p class="text-xs text-gray-400">Kiểm soát các thiết bị đang đăng nhập vào tài khoản Shop.</p>
+          </div>
+          <button id="btn-logout-all" class="chip text-xs flex items-center gap-1 text-red-300 border-red-500/70"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Đăng xuất tất cả</span></button>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <h3 class="text-xs font-semibold text-gray-400 mb-1">Lần đăng nhập gần nhất</h3>
+            <div id="last-login" class="text-sm">-</div>
+            <div id="last-device" class="text-xs text-gray-400 mt-1">Thiết bị: -</div>
+            <div id="last-ip" class="text-xs text-gray-400">IP: -</div>
+          </div>
+          <div>
+            <h3 class="text-xs font-semibold text-gray-400 mb-1">Lịch sử bảo mật</h3>
+            <ul id="security-history" class="text-[11px] space-y-1 max-h-28 overflow-auto"></ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+<script>
+  (async function(){
+    const API_BASE = (location.protocol==='https:'? 'https://localhost:7070' : 'http://localhost:5281');
+    const getToken = ()=> localStorage.getItem('token') || localStorage.getItem('jwtToken') || null;
+    const el = id => document.getElementById(id);
+
+    // Theme toggle
+    const savedTheme = localStorage.getItem('Shop_theme') || 'dark';
+    document.body.classList.remove('dark','light');
+    document.body.classList.add(savedTheme);
+    const themeLabel = el('theme-label');
+    themeLabel.textContent = savedTheme==='dark'?'Dark':'Light';
+    el('theme-toggle').addEventListener('click',()=>{
+      const cur = document.body.classList.contains('dark')?'dark':'light';
+      const next = cur==='dark'?'light':'dark';
+      document.body.classList.remove('dark','light');
+      document.body.classList.add(next);
+      themeLabel.textContent = next==='dark'?'Dark':'Light';
+      localStorage.setItem('Shop_theme',next);
+    });
+
+    // Logout
+    el('logout').addEventListener('click', ()=> {
+      localStorage.removeItem('token');
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('Shop_sessions');
+      location.href='index.html';
+    });
+
+    function decodeJwt(t){
+      try {
+        const p = t.split('.')[1];
+        const json = decodeURIComponent(atob(p.replace(/-/g,'+').replace(/_/g,'/')).split('').map(c=> '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        return JSON.parse(json);
+      } catch(e){ return null; }
+    }
+    function findField(obj, candidates){
+      if(!obj) return null;
+      for(const k of candidates) {
+        if(obj[k] && typeof obj[k] === 'string' && obj[k].trim() && k.toLowerCase() !== 'id' && k.toLowerCase() !== 'email') return obj[k];
+      }
+      for(const key in obj){
+        const lk = key.toLowerCase();
+        for(const c of candidates){
+          const lc = c.toLowerCase();
+          if((lk.endsWith(lc) || lk.includes(lc)) && lk !== 'id' && lk !== 'email') return obj[key];
+        }
+      }
+      return null;
+    }
+
+    // menu switch
+    Array.from(document.querySelectorAll('#account-menu .menu-item')).forEach(item=>{
+      item.addEventListener('click',()=>{
+        const target = item.getAttribute('data-target');
+        Array.from(document.querySelectorAll('#account-menu .menu-item')).forEach(i=>i.classList.remove('active'));
+        item.classList.add('active');
+        Array.from(document.querySelectorAll('main > section')).forEach(sec=>{
+          sec.classList.toggle('hidden',sec.id!==target);
+        });
+      });
+    });
+
+    // Load stored user for quick display
+    let profile = null;
+    try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const u = JSON.parse(stored);
+        if(u.fullName || u.name) el('name').textContent = u.fullName || u.name;
+        if(u.email) el('email').textContent = u.email;
+        if(u.phone || u.phoneNumber) el('phone').textContent = u.phone || u.phoneNumber;
+        if(u.address) el('address').textContent = u.address;
+      }
+    } catch(e){ console.warn(e); }
+
+    const token = getToken();
+    if(token){
+      try {
+        const r = await fetch(API_BASE + '/api/Auth/profile', { headers: { 'Authorization':'Bearer ' + token }});
+        if (r.ok) {
+          profile = await r.json();
+        }
+      } catch(err){ console.warn('Lỗi gọi /api/Auth/profile', err); }
+      if (!profile) profile = decodeJwt(token) || null;
+    }
+
+    const name = (profile && typeof profile.name === 'string' && profile.name.trim()) ? profile.name :
+      findField(profile, ['fullName','unique_name','given_name','sub']) || el('name').textContent || '-';
+    const email = (profile && typeof profile.email === 'string' && profile.email.trim()) ? profile.email :
+      findField(profile, ['emailaddress','upn']) || el('email').textContent || '-';
+    const phone = findField(profile, ['phone','phoneNumber','phone_number','mobile']) || el('phone').textContent || '-';
+    let address = findField(profile, ['address','shippingAddress','street','streetAddress']) || el('address').textContent || '-';
+    const dob = findField(profile, ['dob','dateOfBirth','birth']) || '-';
+    const gender = findField(profile, ['gender','sex']) || '-';
+
+    el('name').textContent = name || '-';
+    el('email').textContent = email || '-';
+    el('phone').textContent = phone || '-';
+    el('address').textContent = address || '-';
+    el('dob').textContent = dob || '-';
+    el('gender').textContent = gender || '-';
+    el('sidebar-name').textContent = name && name!=='-'? name : 'Khách Shop';
+
+    // avatar initials
+    const initials = (name||'Shop').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('') || 'GU';
+    el('avatar').textContent = initials;
+
+    // VIP points (client-side demo)
+    const points = Number(localStorage.getItem('Shop_points') || 0);
+    el('point-balance').textContent = points.toLocaleString('vi-VN');
+    let tier = 'Member';
+    let nextTier = 'Silver';
+    let need = 500000 - points*10000;
+    if(points>=50 && points<200){ tier='Silver'; nextTier='Gold'; need = 2000000 - points*10000; }
+    else if(points>=200){ tier='Gold'; nextTier='Diamond'; need = 5000000 - points*10000; }
+    if(points>=500){ tier='Diamond'; nextTier='-'; }
+    el('tier-name').textContent = tier;
+    el('vip-badge').textContent = tier==='Member'?'Thành viên mới':`Hạng ${tier}`;
+    el('tier-progress').textContent = nextTier==='-'? 'Bạn đang ở hạng cao nhất Shop.':`Mua thêm ${Math.max(0,need).toLocaleString('vi-VN')}đ để lên hạng ${nextTier}.`;
+
+    // điểm history
+    const pointHistory = JSON.parse(localStorage.getItem('Shop_points_history') || '[]');
+    const ulPh = el('point-history');
+    ulPh.innerHTML = pointHistory.length? pointHistory.map(p=>`<li>${p.time} · +${p.points} điểm từ đơn #${p.orderId||'-'}</li>`).join('') : '<li>Chưa có lịch sử tích điểm.</li>';
+
+    // Security history demo
+    const secHistory = JSON.parse(localStorage.getItem('Shop_security_history') || '[]');
+    const ulSec = el('security-history');
+    ulSec.innerHTML = secHistory.length? secHistory.map(s=>`<li>${s.time} · ${s.action}</li>`).join('') : '<li>Chưa có hoạt động bảo mật.</li>';
+
+    function pushSecurity(action){
+      const arr = JSON.parse(localStorage.getItem('Shop_security_history') || '[]');
+      arr.unshift({ time:new Date().toLocaleString('vi-VN'), action });
+      localStorage.setItem('Shop_security_history', JSON.stringify(arr.slice(0,20)));
+    }
+
+    // Change password (client-side only demo)
+    const newPw = el('new-password');
+    const oldPw = el('old-password');
+    const confirmPw = el('confirm-password');
+    const pwFill = el('pw-strength-fill');
+    const pwText = el('pw-strength-text');
+    function evalPw(pw){
+      let score=0; if(pw.length>=6) score++; if(/[A-Z]/.test(pw)) score++; if(/[0-9]/.test(pw)) score++; if(/[^A-Za-z0-9]/.test(pw)) score++; return score;
+    }
+    newPw.addEventListener('input',()=>{
+      const pw = newPw.value;
+      const s = evalPw(pw);
+      const pct = [0,25,50,75,100][s];
+      pwFill.style.width = pct+'%';
+      pwFill.style.background = s<=1?'#f97373':s===2?'#facc15':'#22c55e';
+      pwText.textContent = s<=1?'Độ mạnh: yếu':s===2?'Độ mạnh: khá':'Độ mạnh: mạnh';
+    });
+    el('toggle-new-pass').addEventListener('click',()=>{
+      const type = newPw.type==='password'?'text':'password';
+      newPw.type = type; confirmPw.type = type;
+      el('toggle-new-pass').innerHTML = type==='password'?'<i class="far fa-eye"></i>':'<i class="far fa-eye-slash"></i>';
+    });
+    el('form-change-password').addEventListener('submit',e=>{
+      e.preventDefault();
+      const err = el('change-pass-error');
+      err.textContent='';
+      if(!oldPw.value || !newPw.value || !confirmPw.value){ err.textContent='Vui lòng điền đầy đủ các trường.'; return; }
+      if(newPw.value!==confirmPw.value){ err.textContent='Mật khẩu mới không khớp.'; return; }
+      if(evalPw(newPw.value)<=1){ err.textContent='Mật khẩu mới quá yếu.'; return; }
+      pushSecurity('Đã đổi mật khẩu');
+      localStorage.setItem('Shop_security_history', localStorage.getItem('Shop_security_history'));
+      alert('Đổi mật khẩu (demo) thành công. Backend chưa xử lý thực.');
+      oldPw.value=''; newPw.value=''; confirmPw.value=''; pwFill.style.width='0%'; pwText.textContent='';
+    });
+
+    // Email/phone verify OTP demo
+    let verifyCode=null, verifyExpire=null, verifyTimer=null;
+    const verifyHint = el('verify-hint');
+    const verifyCountdown = el('verify-countdown');
+    const emailStatus = el('email-verify-status');
+    const phoneStatus = el('phone-verify-status');
+    function startVerifyCountdown(){
+      if(verifyTimer) clearInterval(verifyTimer);
+      let remain=60;
+      verifyCountdown.textContent='60s';
+      verifyTimer=setInterval(()=>{
+        remain--; if(remain<=0){ clearInterval(verifyTimer); verifyCountdown.textContent='Hết hạn, gửi lại mã'; verifyCode=null; verifyExpire=null; }
+        else verifyCountdown.textContent=remain+'s';
+      },1000);
+    }
+    el('btn-send-verify').addEventListener('click',()=>{
+      verifyCode = String(Math.floor(100000+Math.random()*900000));
+      verifyExpire = Date.now()+5*60*1000;
+      verifyHint.textContent = 'Mã OTP demo: '+verifyCode;
+      verifyHint.classList.remove('text-red-400');
+      verifyHint.classList.add('text-sky-300');
+      startVerifyCountdown();
+      pushSecurity('Gửi lại mã xác minh email/điện thoại');
+      const input = prompt('Nhập mã OTP demo vừa hiển thị để xác minh (tùy chọn):');
+      if(!input) return;
+      if(Date.now()>verifyExpire){ alert('Mã đã hết hạn, vui lòng gửi lại.'); return; }
+      if(input!==verifyCode){ alert('Mã OTP không đúng.'); return; }
+      emailStatus.textContent='Đã xác minh';
+      emailStatus.classList.add('text-emerald-300');
+      phoneStatus.textContent='Đã xác minh';
+      phoneStatus.classList.add('text-emerald-300');
+      verifyHint.textContent='Email/SĐT đã xác minh (demo).';
+    });
+
+    // 2FA toggle
+    const toggle2fa = el('toggle-2fa');
+    const dot2fa = el('dot-2fa');
+    const saved2fa = localStorage.getItem('Shop_2fa')==='on';
+    toggle2fa.checked = saved2fa;
+    if(saved2fa){ dot2fa.classList.add('translate-x-4','bg-emerald-400'); }
+    toggle2fa.addEventListener('change',()=>{
+      const on = toggle2fa.checked;
+      dot2fa.classList.toggle('translate-x-4',on);
+      dot2fa.classList.toggle('bg-emerald-400',on);
+      localStorage.setItem('Shop_2fa', on?'on':'off');
+      pushSecurity(on?'Bật bảo mật 2 bước (2FA)':'Tắt bảo mật 2 bước (2FA)');
+    });
+
+    // Address manager
+    const addressListEl = el('address-list');
+    let addresses = JSON.parse(localStorage.getItem('Shop_addresses') || '[]');
+    function renderAddresses(){
+      if(!addresses.length){ addressListEl.innerHTML='<div class="text-xs text-gray-400">Chưa có địa chỉ nào. Thêm địa chỉ mới để đặt hàng nhanh hơn.</div>'; return; }
+      addressListEl.innerHTML = addresses.map((a,idx)=>`
+        <div class="border border-gray-700 rounded-lg p-3 flex justify-between items-start">
+          <div>
+            <div class="font-semibold text-sm">${a.name || 'Nhà '+(idx+1)}</div>
+            <div class="text-xs text-gray-300">${a.phone || ''}</div>
+            <div class="text-xs text-gray-400 mt-1">${a.line}</div>
+            ${a.default?'<div class="text-[10px] text-emerald-300 mt-1">Địa chỉ mặc định</div>':''}
+          </div>
+          <div class="text-xs space-y-1 text-right">
+            <button data-idx="${idx}" class="text-sky-300 btn-edit-address">Sửa</button><br/>
+            <button data-idx="${idx}" class="text-red-300 btn-delete-address">Xoá</button><br/>
+            ${a.default?'':'<button data-idx="'+idx+'" class="text-amber-300 btn-set-default">Đặt mặc định</button>'}
+          </div>
+        </div>`).join('');
+      // attach events
+      addressListEl.querySelectorAll('.btn-edit-address').forEach(btn=>btn.addEventListener('click',()=>{
+        const i = Number(btn.getAttribute('data-idx'));
+        const cur = addresses[i];
+        const line = prompt('Cập nhật địa chỉ:', cur.line || '');
+        if(!line) return;
+        const name = prompt('Tên gợi nhớ (Nhà, Công ty, ...):', cur.name || '');
+        const phone = prompt('Số điện thoại:', cur.phone || '');
+        addresses[i] = { ...cur, line, name, phone };
+        localStorage.setItem('Shop_addresses', JSON.stringify(addresses));
+        renderAddresses();
+      }));
+      addressListEl.querySelectorAll('.btn-delete-address').forEach(btn=>btn.addEventListener('click',()=>{
+        const i = Number(btn.getAttribute('data-idx'));
+        if(!confirm('Xoá địa chỉ này?')) return;
+        addresses.splice(i,1);
+        localStorage.setItem('Shop_addresses', JSON.stringify(addresses));
+        renderAddresses();
+      }));
+      addressListEl.querySelectorAll('.btn-set-default').forEach(btn=>btn.addEventListener('click',()=>{
+        const i = Number(btn.getAttribute('data-idx'));
+        addresses = addresses.map((a,idx)=>({...a, default: idx===i}));
+        localStorage.setItem('Shop_addresses', JSON.stringify(addresses));
+        renderAddresses();
+        el('address').textContent = addresses[i].line;
+      }));
+    }
+    renderAddresses();
+    el('btn-add-address').addEventListener('click',()=>{
+      const line = prompt('Nhập địa chỉ giao hàng đầy đủ:');
+      if(!line) return;
+      const nameLabel = prompt('Đặt tên cho địa chỉ (Nhà, Công ty,...):','Nhà');
+      const phoneLabel = prompt('Số điện thoại người nhận:', phone && phone!=='-'? phone : '');
+      const isDefault = !addresses.length;
+      addresses.push({ line, name:nameLabel, phone:phoneLabel, default:isDefault });
+      localStorage.setItem('Shop_addresses', JSON.stringify(addresses));
+      renderAddresses();
+      if(isDefault) el('address').textContent = line;
+    });
+
+    // Orders panel
+    async function loadOrders(){
+      const ordersEl = el('orders');
+      ordersEl.textContent = 'Đang tải…';
+      if (!token) { ordersEl.innerHTML = '<div class="text-sm text-gray-300">Bạn chưa đăng nhập. <a href="dang-nhap.html" class="text-red-400">Đăng nhập</a></div>'; return; }
+      try {
+        const r = await fetch(API_BASE + '/api/Order', { headers: { 'Authorization':'Bearer ' + token }});
+        if (!r.ok) { ordersEl.innerHTML = '<div class="text-red-400">Không tải được lịch sử (status:'+r.status+')</div>'; return; }
+        const arr = await r.json();
+        if (!Array.isArray(arr) || arr.length===0) { ordersEl.innerHTML = '<div class="text-gray-400">Chưa có đơn hàng.</div>'; return; }
+        if ((!address || address==='-') && arr[0]){
+          const ship = arr[0].shippingAddress || arr[0].address || '';
+          if (ship) el('address').textContent = ship;
+        }
+        ordersEl.innerHTML = arr.slice(0,3).map(o=>{
+          const total = o.totalAmount || (o.items||[]).reduce((s,i)=> s + ((i.product?.price||i.price||0)*(i.quantity||1)),0);
+          return `<div class="border border-gray-700 rounded-lg p-3 mb-2 flex justify-between items-center">
+            <div>
+              <div class="text-sm font-semibold">Đơn #${o.id}</div>
+              <div class="text-[11px] text-gray-400">${o.orderDate ? new Date(o.orderDate).toLocaleString('vi-VN') : '-'}</div>
+              <div class="text-[11px] text-gray-400">Trạng thái: ${o.orderStatus || '-'}</div>
+            </div>
+            <div class="text-sm text-red-300 font-semibold">${(Number(total)||0).toLocaleString('vi-VN')} VNĐ</div>
+          </div>`;
+        }).join('');
+      } catch(e){
+        ordersEl.innerHTML = '<div class="text-red-400">Lỗi: '+ (e.message||e) +'</div>';
+      }
+    }
+    await loadOrders();
+
+    // Sessions / last login demo
+    const sessions = JSON.parse(localStorage.getItem('Shop_sessions') || '[]');
+    const ua = navigator.userAgent;
+    const currentSession = { time:new Date().toLocaleString('vi-VN'), device:ua.slice(0,80), ip:'127.0.0.1 (demo)' };
+    sessions.unshift(currentSession);
+    localStorage.setItem('Shop_sessions', JSON.stringify(sessions.slice(0,10)));
+    const last = sessions[0] || currentSession;
+    el('last-login').textContent = last.time;
+    el('last-device').textContent = 'Thiết bị: '+ last.device;
+    el('last-ip').textContent = 'IP: '+ last.ip;
+    el('btn-logout-all').addEventListener('click',()=>{
+      if(!confirm('Đăng xuất khỏi tất cả thiết bị (demo)?')) return;
+      localStorage.removeItem('Shop_sessions');
+      pushSecurity('Đăng xuất khỏi tất cả thiết bị');
+      alert('Tất cả phiên (demo) đã được xoá. Bạn nên đổi mật khẩu nếu nghi ngờ bị lộ.');
+    });
+
+    // Edit profile quick (name/phone/address via prompt)
+    el('btn-edit-profile').addEventListener('click',()=>{
+      const newName = prompt('Cập nhật họ tên:', el('name').textContent || '');
+      if(newName){ el('name').textContent=newName; el('sidebar-name').textContent=newName; }
+      const newPhone = prompt('Cập nhật số điện thoại:', phone && phone!=='-'? phone : '');
+      if(newPhone) el('phone').textContent=newPhone;
+      const newAddress = prompt('Cập nhật địa chỉ:', el('address').textContent || '');
+      if(newAddress) el('address').textContent=newAddress;
+      const userObj = { fullName: el('name').textContent, email: el('email').textContent, phone: el('phone').textContent, address: el('address').textContent };
+      localStorage.setItem('user', JSON.stringify(userObj));
+    });
+  })();
+</script>
+</body>
+</html>

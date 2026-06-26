@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quên Mật Khẩu - Shop Men's Fashion</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --accent: #B71C1C; --accent-dark: #8B0A0A; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #d9e7ff 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: gradientShift 10s infinite alternate;
+    }
+    @keyframes gradientShift {
+      0% { background: linear-gradient(135deg, #f0f4f8 0%, #d9e7ff 100%); }
+      100% { background: linear-gradient(135deg, #d9e7ff 0%, #f0f4f8 100%); }
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      padding: 2.5rem;
+      max-width: 450px;
+      width: 90%;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+    .back-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--accent);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .back-btn:hover { transform: rotate(90deg); }
+    .input-field {
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .input-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(183, 28, 28, 0.5);
+    }
+    .btn {
+      transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      background: var(--accent-dark);
+      box-shadow: 0 5px 20px rgba(183, 28, 28, 0.4);
+    }
+    .error { color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem; }
+    .lottie-animation { width: 120px; height: 120px; margin: 0 auto 1.5rem; }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      animation: fadeIn 0.3s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-content.success { border: 2px solid var(--accent); }
+    .modal-content.error { border: 2px solid #dc3545; }
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--accent);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .close-btn:hover { transform: rotate(90deg); }
+    @media (max-width: 768px) {
+      .card { padding: 1.5rem; }
+      .lottie-animation { width: 90px; height: 90px; }
+      .back-btn { top: 0.5rem; left: 0.5rem; }
+      .modal-content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <button class="back-btn" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></button>
+    <lottie-player class="lottie-animation" src="https://assets9.lottiefiles.com/packages/lf20_6x9nq0vn.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Quên Mật Khẩu</h1>
+    <form id="forgot-form" class="space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="forgot-email" class="input-field w-full p-3 border rounded-lg mt-1" required placeholder="Nhập email của bạn" />
+        <div id="email-error" class="error"></div>
+      </div>
+      <div id="otp-section" class="hidden space-y-4">
+        <label class="block text-sm font-medium text-gray-700">Mã OTP</label>
+        <input type="text" id="forgot-otp" class="input-field w-full p-3 border rounded-lg mt-1" required placeholder="Nhập mã OTP" />
+        <div id="otp-error" class="error"></div>
+      </div>
+      <div id="reset-section" class="hidden space-y-4">
+        <label class="block text-sm font-medium text-gray-700">Mật khẩu mới</label>
+        <input type="password" id="new-password" class="input-field w-full p-3 border rounded-lg mt-1" required placeholder="Nhập mật khẩu mới" />
+        <div id="new-password-error" class="error"></div>
+        <label class="block text-sm font-medium text-gray-700">Xác nhận mật khẩu</label>
+        <input type="password" id="confirm-new-password" class="input-field w-full p-3 border rounded-lg mt-1" required placeholder="Xác nhận mật khẩu" />
+        <div id="confirm-error" class="error"></div>
+      </div>
+      <button type="submit" id="forgot-submit" class="btn w-full bg-red-600 text-white py-3 rounded-lg font-semibold">Gửi yêu cầu</button>
+      <p class="text-center text-sm text-gray-600 mt-4">Quay lại? <a href="dang-nhap.html" class="text-red-600 hover:underline">Đăng nhập</a></p>
+      <p class="text-center text-xs text-gray-500 mt-2">Chúng tôi tôn trọng quyền riêng tư của bạn. <a href="#" class="text-red-600 hover:underline">Xem chính sách</a></p>
+    </form>
+  </div>
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <i class="fas fa-check-circle text-4xl mb-4" style="color: var(--accent);"></i>
+      <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+      <p id="modal-message" class="text-gray-600 mb-4"></p>
+      <button id="modal-ok" class="btn bg-red-600 text-white py-2 px-4 rounded-lg">OK</button>
+    </div>
+  </div>
+
+  <script src="js/product.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    let otp = null;
+    let currentStep = 'email';
+
+    document.getElementById('forgot-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('forgot-email').value;
+      const otpInput = document.getElementById('forgot-otp').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmNewPassword = document.getElementById('confirm-new-password').value;
+      const emailError = document.getElementById('email-error');
+      const otpError = document.getElementById('otp-error');
+      const newPasswordError = document.getElementById('new-password-error');
+      const confirmError = document.getElementById('confirm-error');
+      const otpSection = document.getElementById('otp-section');
+      const resetSection = document.getElementById('reset-section');
+      const forgotSubmit = document.getElementById('forgot-submit');
+
+      emailError.textContent = '';
+      otpError.textContent = '';
+      newPasswordError.textContent = '';
+      confirmError.textContent = '';
+
+      if (currentStep === 'email') {
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+          emailError.textContent = 'Vui lòng nhập email hợp lệ!';
+          return;
+        }
+        const user = users.find(u => u.email === email);
+        if (user) {
+          otp = Math.floor(100000 + Math.random() * 900000).toString();
+          otpSection.classList.remove('hidden');
+          forgotSubmit.textContent = 'Xác nhận OTP';
+          currentStep = 'otp';
+          showModal('Thông báo', `Mã OTP đã được gửi đến ${email}: ${otp}`, true);
+        } else {
+          showModal('Thất bại', 'Email không tồn tại!', false);
+        }
+      } else if (currentStep === 'otp') {
+        if (!otpInput || otpInput !== otp) {
+          otpError.textContent = 'Mã OTP không đúng!';
+          return;
+        }
+        resetSection.classList.remove('hidden');
+        otpSection.classList.add('hidden');
+        forgotSubmit.textContent = 'Đặt lại mật khẩu';
+        currentStep = 'reset';
+      } else if (currentStep === 'reset') {
+        if (!newPassword || newPassword.length < 6) {
+          newPasswordError.textContent = 'Mật khẩu mới phải có ít nhất 6 ký tự!';
+          return;
+        }
+        if (newPassword !== confirmNewPassword) {
+          confirmError.textContent = 'Mật khẩu không khớp!';
+          return;
+        }
+        const userIndex = users.findIndex(u => u.email === email);
+        users[userIndex].password = newPassword;
+        users[userIndex].lastLogin = new Date().toISOString();
+        localStorage.setItem('users', JSON.stringify(users));
+        showModal('Thành công', 'Mật khẩu đã được đặt lại thành công! Vui lòng đăng nhập.', true);
+        setTimeout(() => { window.location.href = 'dang-nhap.html'; }, 2000);
+      }
+    });
+
+    function showModal(title, message, isSuccess) {
+      const modal = document.getElementById('modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalMessage = document.getElementById('modal-message');
+      const modalContent = document.querySelector('.modal-content');
+      modalContent.className = 'modal-content' + (isSuccess ? ' success' : ' error');
+      modalTitle.textContent = title;
+      modalMessage.textContent = message;
+      modal.style.display = 'flex';
+      if (isSuccess) confetti({ particleCount: 100, spread: 70 });
+      document.getElementById('modal-ok').focus();
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.style.display = 'none';
+    }
+
+    document.getElementById('modal-ok').addEventListener('click', closeModal);
+  </script>
+</body>
+</html>

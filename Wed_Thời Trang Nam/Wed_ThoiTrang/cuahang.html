@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hệ Thống Cửa Hàng Shop</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --accent: #B71C1C; --accent-dark: #8B0A0A; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #111827;
+    }
+
+    .top-bar { background: #f8f8f8; padding: 0.5rem 0; font-size: 0.875rem; border-bottom: 1px solid #eee; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(229,231,235,0.7);
+      transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.22s ease, transform 0.18s ease;
+    }
+    header .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding-inline: 1rem;
+      padding-block: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      transition: padding 0.22s ease;
+    }
+    header.shrink {
+      padding-block: 0.1rem;
+      box-shadow: 0 8px 26px rgba(15,23,42,0.15);
+      background: rgba(255,255,255,0.98);
+    }
+    header.shrink .header-inner {
+      padding-block: 0.55rem;
+    }
+
+    .brand-block { display:inline-flex; align-items:center; gap:0.6rem; }
+    .brand-logo { width:42px; height:42px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+    .brand-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    .main-nav {
+      display:flex;
+      align-items:center;
+      gap:1.9rem;
+      font-size:0.8rem;
+      font-weight:500;
+      text-transform:uppercase;
+      letter-spacing:0.14em;
+    }
+    .nav-link {
+      position:relative;
+      padding-bottom:0.2rem;
+      color:#4b5563;
+      transition:color 0.18s ease;
+    }
+    .nav-link::after {
+      content:'';
+      position:absolute;
+      left:0;
+      bottom:0;
+      width:100%;
+      height:2px;
+      border-radius:999px;
+      background-image:linear-gradient(90deg,#111827,var(--accent));
+      transform:scaleX(0);
+      transform-origin:left;
+      transition:transform 0.25s ease;
+    }
+    .nav-link:hover { color:#111827; }
+    .nav-link:hover::after { transform:scaleX(1); }
+    .nav-link-active { color:#111827; }
+    .nav-link-active::after { transform:scaleX(1); }
+
+    .icon-btn {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.55);
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+      box-shadow: 0 2px 7px rgba(15,23,42,0.07);
+    }
+    .icon-btn i {
+      font-size: 0.9rem;
+      color: #111827;
+      transition: color 0.18s ease, transform 0.18s ease;
+    }
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(15,23,42,0.16);
+      border-color: rgba(148,163,184,0.9);
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 16px;
+      height: 16px;
+      padding-inline: 3px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 0.65rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 2px #ffffff;
+    }
+
+    .store-card {
+      border-radius: 20px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .store-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 45px rgba(15,23,42,0.16);
+      border-color: rgba(248,113,113,0.6);
+    }
+    .badge-flagship {
+      background: linear-gradient(135deg,#f97316,#ec4899);
+      color:#fff;
+    }
+    .badge-sale {
+      background: linear-gradient(135deg,#22c55e,#16a34a);
+      color:#fff;
+    }
+    .badge-large { background:#eff6ff; color:#1d4ed8; }
+
+    .status-dot { width:8px;height:8px;border-radius:999px; }
+
+    .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.55); display:none; align-items:center; justify-content:center; z-index:60; }
+    .modal-overlay.active { display:flex; }
+    .modal-card { max-width:720px; width:100%; max-height:90vh; overflow:auto; border-radius:24px; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- TOP BAR -->
+  <div class="top-bar text-center text-gray-600">
+    <div class="container mx-auto px-4 flex justify-between items-center text-xs">
+      <span>Giảm tới <b>50%</b> các sản phẩm trong tuần</span>
+      <a href="index.html" class="text-red-600 font-medium">Trang chủ</a>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="brand-block">
+        <img src="images/logo.jpg" alt="HT HOUSE" class="brand-logo">
+        <span class="brand-text">Shop Men's Fashion</span>
+      </a>
+      <div class="flex items-center gap-6">
+        <nav class="hidden md:flex main-nav">
+          <a href="index.html" class="nav-link">Trang chủ</a>
+          <a href="sanpham.html" class="nav-link">Sản phẩm</a>
+          <a href="cuahang.html" class="nav-link nav-link-active text-red-600">Cửa hàng</a>
+          <a href="giohang.html" class="nav-link">Giỏ hàng</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <a href="giohang.html" class="icon-btn relative">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="badge" id="cart-count">0</span>
+          </a>
+          <a href="dang-nhap.html" class="icon-btn relative">
+            <i class="fas fa-user"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO / BANNER -->
+  <section class="bg-gradient-to-r from-red-600 via-rose-500 to-orange-400 text-white py-14 md:py-20">
+    <div class="container mx-auto px-4 max-w-5xl flex flex-col md:flex-row items-center gap-8">
+      <div class="flex-1">
+        <p class="uppercase text-xs tracking-[0.25em] text-red-100 mb-2">Shop store locator</p>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-3">
+          Hệ thống cửa hàng Shop trên toàn quốc
+        </h1>
+        <p class="text-sm md:text-base text-red-50 mb-5">
+          Tìm nhanh chi nhánh gần bạn, xem giờ mở cửa, dịch vụ hỗ trợ và chỉ đường chi tiết mà không cần mở bản đồ rườm rà.
+        </p>
+        <div class="flex flex-wrap gap-3 text-xs">
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/15 border border-white/30"><i class="fas fa-location-dot"></i>3+ chi nhánh TP.HCM</span>
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/15 border border-white/30"><i class="fas fa-shirt"></i>Có khu vực thử đồ</span>
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/15 border border-white/30"><i class="fas fa-car-side"></i>Giữ xe miễn phí</span>
+        </div>
+      </div>
+      <div class="flex-1 max-w-md mx-auto">
+        <div class="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-4 md:p-5 shadow-xl">
+          <p class="text-xs text-red-50 mb-2 flex items-center gap-1"><i class="fas fa-compass"></i><span>Định vị nhanh chi nhánh phù hợp</span></p>
+          <div class="space-y-3 text-gray-900">
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input id="store-search" type="text" placeholder="Tìm theo tên, địa chỉ hoặc số điện thoại" class="w-full pl-9 pr-3 py-2.5 rounded-xl text-sm border border-gray-200 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <select id="filter-city" class="border rounded-xl px-3 py-2 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                <option value="">Tất cả khu vực</option>
+                <option value="TP.HCM">TP. Hồ Chí Minh</option>
+                <option value="Hà Nội">Hà Nội</option>
+                <option value="Đà Nẵng">Đà Nẵng</option>
+              </select>
+              <select id="filter-district" class="border rounded-xl px-3 py-2 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                <option value="">Tất cả quận / huyện</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <select id="filter-status" class="border rounded-xl px-3 py-2 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                <option value="">Trạng thái: Tất cả</option>
+                <option value="open">Đang mở</option>
+                <option value="closing-soon">Sắp đóng</option>
+                <option value="closed">Đã đóng</option>
+              </select>
+              <button id="btn-locate" class="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl border border-white/60 text-white text-xs font-semibold bg-white/10 hover:bg-white/20 transition">
+                <i class="fas fa-location-crosshairs text-sm"></i>
+                Tự nhận diện gần tôi
+              </button>
+            </div>
+            <div class="text-[11px] text-red-50 flex items-center gap-2">
+              <i class="fas fa-circle-info"></i>
+              <span id="filter-summary">Hiển thị tất cả chi nhánh Shop.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER BY SERVICES -->
+  <section class="py-6 bg-gray-50 border-b border-gray-200/70">
+    <div class="container mx-auto px-4 max-w-6xl flex flex-wrap items-center gap-3 text-xs">
+      <span class="font-semibold text-gray-700 flex items-center gap-2 mr-1"><i class="fas fa-filter"></i>Bộ lọc dịch vụ:</span>
+      <button class="service-chip px-3 py-1.5 rounded-full border text-gray-700 bg-white hover:bg-gray-100" data-service="tryon">Có phòng thử đồ</button>
+      <button class="service-chip px-3 py-1.5 rounded-full border text-gray-700 bg-white hover:bg-gray-100" data-service="exchange">Đổi trả tại chỗ</button>
+      <button class="service-chip px-3 py-1.5 rounded-full border text-gray-700 bg-white hover:bg-gray-100" data-service="card">Thanh toán thẻ</button>
+      <button class="service-chip px-3 py-1.5 rounded-full border text-gray-700 bg-white hover:bg-gray-100" data-service="parking">Giữ xe miễn phí</button>
+      <button class="service-chip px-3 py-1.5 rounded-full border text-gray-700 bg-white hover:bg-gray-100" data-service="flagship">Cửa hàng flagship / lớn</button>
+    </div>
+  </section>
+
+  <!-- STORE LIST -->
+  <section class="py-10 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-6xl grid lg:grid-cols-4 gap-6">
+      <!-- CỘT CHÍNH: DANH SÁCH CỬA HÀNG -->
+      <div class="lg:col-span-3">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <i class="fas fa-store text-red-600"></i>
+            Danh sách cửa hàng
+          </h2>
+          <p id="store-count" class="text-xs text-gray-500"></p>
+        </div>
+        <div id="store-list" class="grid gap-5 md:grid-cols-2 lg:grid-cols-2"></div>
+      </div>
+
+      <!-- CỘT PHỤ: AI TRỢ LÝ & ANALYTICS -->
+      <aside class="space-y-4">
+        <!-- MINI ANALYTICS -->
+        <div class="bg-white border border-gray-100 rounded-2xl p-4 text-xs text-gray-700 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <p class="font-semibold flex items-center gap-2 text-gray-900">
+              <i class="fas fa-chart-line text-emerald-600"></i>
+              Realtime in-store analytics
+            </p>
+            <span class="text-[10px] text-gray-400" id="analytics-timestamp"></span>
+          </div>
+          <div class="space-y-2">
+            <p class="flex items-center justify-between"><span class="text-gray-500">Người đang xem trang cửa hàng</span><span class="font-semibold" id="analytics-online">--</span></p>
+            <p class="flex items-center justify-between"><span class="text-gray-500">Chi nhánh được xem nhiều nhất hôm nay</span><span class="font-semibold" id="analytics-top-store">--</span></p>
+            <p class="flex items-center justify-between"><span class="text-gray-500">Đánh giá trung bình toàn hệ thống</span><span class="font-semibold" id="analytics-rating">--</span></p>
+          </div>
+        </div>
+
+        <!-- AI STORE ASSISTANT -->
+        <div class="bg-gradient-to-b from-slate-900 to-slate-800 text-slate-50 rounded-2xl p-4 text-xs shadow-lg">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-sm">Shop Store AI</p>
+              <p class="text-[11px] text-slate-300">Gợi ý chi nhánh & sản phẩm phù hợp.</p>
+            </div>
+          </div>
+          <div class="space-y-2 mb-2">
+            <select id="ai-purpose" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:ring-1 focus:ring-emerald-400">
+              <option value="">Bạn cần gì hôm nay?</option>
+              <option value="outerwear">Tìm áo khoác / blazer</option>
+              <option value="office">Tìm đồ công sở lịch sự</option>
+              <option value="street">Tìm outfit đi chơi / streetwear</option>
+              <option value="accessory">Tìm giày, thắt lưng, phụ kiện</option>
+            </select>
+            <select id="ai-time" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:ring-1 focus:ring-emerald-400">
+              <option value="">Thời gian bạn ghé</option>
+              <option value="morning">Sáng (8h - 11h)</option>
+              <option value="afternoon">Chiều (11h - 17h)</option>
+              <option value="evening">Tối (17h - 22h)</option>
+            </select>
+            <select id="ai-city" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:ring-1 focus:ring-emerald-400">
+              <option value="">Khu vực bạn ở</option>
+              <option value="TP.HCM">TP. Hồ Chí Minh</option>
+              <option value="Hà Nội">Hà Nội</option>
+              <option value="Đà Nẵng">Đà Nẵng</option>
+            </select>
+          </div>
+          <button id="ai-suggest-btn" class="w-full flex items-center justify-center gap-1 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-semibold py-2 rounded-lg text-xs mb-2">
+            <i class="fas fa-wand-magic-sparkles"></i>
+            Gợi ý chi nhánh & outfit
+          </button>
+          <div id="ai-suggest-output" class="text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded-lg p-2.5 min-h-[60px]"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ZALO -->
+  <a href="https://zalo.me/0344445555" class="fixed bottom-5 right-5 bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-50 hover:scale-110 transition">
+    <i class="fab fa-facebook-messenger text-2xl"></i>
+  </a>
+
+  <!-- MODAL CHI TIẾT CỬA HÀNG -->
+  <div id="store-modal" class="modal-overlay">
+    <div class="modal-card bg-white shadow-2xl p-5 md:p-6 relative">
+      <button id="modal-close" class="absolute top-3 right-3 w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-100"><i class="fas fa-xmark"></i></button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script>
+    // DỮ LIỆU NHIỀU CỬA HÀNG
+    const stores = [
+      {
+        id: 1,
+        name: 'Shop Flagship Tân Bình',
+        city: 'TP.HCM',
+        district: 'Tân Bình',
+        address: '71/27 Nguyễn Phúc Chu, Phường 15, Quận Tân Bình, TP. Hồ Chí Minh',
+        phone: '0281234567',
+        opening: '08:30',
+        closing: '22:00',
+        services: ['tryon', 'exchange', 'card', 'parking', 'flagship'],
+        highlight: ['flagship', 'sale'],
+        size: 'large',
+        images: ['images/store1-1.jpg','images/store1-2.jpg','images/store1-3.jpg'],
+        distanceKm: 1.2,
+        directionsText: 'Từ Ngã tư Bảy Hiền, đi thẳng Nguyễn Phúc Chu 800m, Shop bên tay phải.',
+        rating: 4.8,
+        reviews: [
+          { name:'Anh Minh', stars:5, comment:'Nhân viên cực kỳ thân thiện, tư vấn kỹ.', date:'2025-10-12' },
+          { name:'Hoàng Nam', stars:4, comment:'Cửa hàng rộng, nhiều mẫu áo khoác.', date:'2025-09-05' }
+        ]
+      },
+      {
+        id: 2,
+        name: 'Shop Quận 1',
+        city: 'TP.HCM',
+        district: 'Quận 1',
+        address: 'Đang cập nhật - trung tâm Quận 1, TP. Hồ Chí Minh',
+        phone: '0289999888',
+        opening: '09:00',
+        closing: '22:00',
+        services: ['tryon', 'card', 'parking'],
+        highlight: ['large'],
+        size: 'large',
+        images: ['images/store2-1.jpg','images/store2-2.jpg'],
+        distanceKm: 3.5,
+        directionsText: 'Chạy dọc đường Lê Lợi hướng Bến Thành, Shop nằm bên trái.',
+        rating: 4.6,
+        reviews: []
+      },
+      {
+        id: 3,
+        name: 'Shop Hà Nội - Cầu Giấy',
+        city: 'Hà Nội',
+        district: 'Cầu Giấy',
+        address: 'Số 123 Trần Duy Hưng, Quận Cầu Giấy, Hà Nội',
+        phone: '0247777666',
+        opening: '09:00',
+        closing: '21:30',
+        services: ['tryon', 'exchange', 'card', 'parking'],
+        highlight: ['flagship'],
+        size: 'large',
+        images: ['images/store3-1.jpg','images/store3-2.jpg'],
+        distanceKm: 1.8,
+        directionsText: 'Từ BigC Thăng Long đi thẳng 400m, Shop bên tay phải.',
+        rating: 4.7,
+        reviews: []
+      },
+      {
+        id: 4,
+        name: 'Shop Đà Nẵng - Hải Châu',
+        city: 'Đà Nẵng',
+        district: 'Hải Châu',
+        address: 'Số 56 Bạch Đằng, Quận Hải Châu, Đà Nẵng',
+        phone: '0236888777',
+        opening: '09:30',
+        closing: '21:30',
+        services: ['tryon', 'card'],
+        highlight: ['sale'],
+        size: 'medium',
+        images: ['images/store4-1.jpg'],
+        distanceKm: 2.4,
+        directionsText: 'Dọc sông Hàn, Shop nằm gần cầu Rồng, mặt tiền Bạch Đằng.',
+        rating: 4.5,
+        reviews: []
+      }
+    ];
+
+    const storeSearch = document.getElementById('store-search');
+    const filterCity = document.getElementById('filter-city');
+    const filterDistrict = document.getElementById('filter-district');
+    const filterStatus = document.getElementById('filter-status');
+    const serviceChips = document.querySelectorAll('.service-chip');
+    const storeListEl = document.getElementById('store-list');
+    const storeCountEl = document.getElementById('store-count');
+    const filterSummaryEl = document.getElementById('filter-summary');
+    const locateBtn = document.getElementById('btn-locate');
+
+    // analytics + AI elements
+    const analyticsOnlineEl = document.getElementById('analytics-online');
+    const analyticsTopStoreEl = document.getElementById('analytics-top-store');
+    const analyticsRatingEl = document.getElementById('analytics-rating');
+    const analyticsTimestampEl = document.getElementById('analytics-timestamp');
+
+    const aiPurposeEl = document.getElementById('ai-purpose');
+    const aiTimeEl = document.getElementById('ai-time');
+    const aiCityEl = document.getElementById('ai-city');
+    const aiSuggestBtn = document.getElementById('ai-suggest-btn');
+    const aiOutputEl = document.getElementById('ai-suggest-output');
+
+    const modalEl = document.getElementById('store-modal');
+    const modalContent = document.getElementById('modal-content');
+    const modalClose = document.getElementById('modal-close');
+
+    let activeServices = new Set();
+    let userLocation = null; // {lat,lng}
+
+    function isStoreOpen(store) {
+      const now = new Date();
+      const [openH, openM] = store.opening.split(':').map(Number);
+      const [closeH, closeM] = store.closing.split(':').map(Number);
+      const openMinutes = openH * 60 + openM;
+      const closeMinutes = closeH * 60 + closeM;
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      let status = 'closed';
+      let label = 'Đã đóng cửa';
+      let color = 'text-red-600';
+
+      if (currentMinutes >= openMinutes && currentMinutes < closeMinutes) {
+        const diff = closeMinutes - currentMinutes;
+        if (diff <= 30) {
+          status = 'closing-soon';
+          label = `Sắp đóng – còn ${diff} phút`;
+          color = 'text-yellow-500';
+        } else {
+          status = 'open';
+          label = 'Hiện đang mở';
+          color = 'text-emerald-600';
+        }
+      }
+      return { status, label, color };
+    }
+
+    function getStatusDotColor(status) {
+      if (status === 'open') return 'bg-emerald-500';
+      if (status === 'closing-soon') return 'bg-yellow-400';
+      return 'bg-red-500';
+    }
+
+    function renderDistrictOptions() {
+      const city = filterCity.value;
+      const districts = [...new Set(stores.filter(s => !city || s.city === city).map(s => s.district))];
+      filterDistrict.innerHTML = '<option value="">Tất cả quận / huyện</option>' +
+        districts.map(d => `<option value="${d}">${d}</option>`).join('');
+    }
+
+    function applyFilters() {
+      const q = (storeSearch.value || '').toLowerCase().trim();
+      const city = filterCity.value;
+      const district = filterDistrict.value;
+      const desiredStatus = filterStatus.value;
+
+      let list = stores.slice();
+
+      if (q) {
+        list = list.filter(s =>
+          s.name.toLowerCase().includes(q) ||
+          s.address.toLowerCase().includes(q) ||
+          (s.phone || '').toLowerCase().includes(q)
+        );
+      }
+
+      if (city) list = list.filter(s => s.city === city);
+      if (district) list = list.filter(s => s.district === district);
+
+      if (desiredStatus) {
+        list = list.filter(s => isStoreOpen(s).status === desiredStatus);
+      }
+
+      if (activeServices.size > 0) {
+        list = list.filter(s =>
+          [...activeServices].every(sv => s.services.includes(sv))
+        );
+      }
+
+      if (userLocation) {
+        list = list.slice().sort((a, b) => (a.distanceKm || 999) - (b.distanceKm || 999));
+      }
+
+      renderStoreList(list);
+      updateSummary(list.length);
+    }
+
+    function renderStoreList(list) {
+      if (!list.length) {
+        storeListEl.innerHTML = '<p class="text-sm text-gray-500">Không tìm thấy cửa hàng phù hợp với bộ lọc hiện tại.</p>';
+        storeCountEl.textContent = '0 cửa hàng';
+        return;
+      }
+      storeCountEl.textContent = `${list.length} cửa hàng được tìm thấy`;
+
+      storeListEl.innerHTML = list.map(store => {
+        const st = isStoreOpen(store);
+        const dot = getStatusDotColor(st.status);
+        const distance = store.distanceKm ? `Cách bạn ${store.distanceKm.toFixed(1)} km` : '';
+        const isFlagship = (store.highlight || []).includes('flagship');
+        const isSale = (store.highlight || []).includes('sale');
+        const isLarge = (store.highlight || []).includes('large');
+
+        return `
+          <article class="store-card bg-white border border-gray-100 p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h3 class="font-bold text-gray-900 text-sm md:text-base flex items-center gap-2">
+                  ${store.name}
+                  ${isFlagship ? '<span class="badge-flagship text-[10px] px-2 py-0.5 rounded-full font-semibold">Flagship</span>' : ''}
+                  ${isSale ? '<span class="badge-sale text-[10px] px-2 py-0.5 rounded-full font-semibold">Sale mạnh</span>' : ''}
+                </h3>
+                <p class="text-xs text-gray-500 mt-1 flex items-center gap-1"><i class="fas fa-location-dot text-red-500"></i><span>${store.address}</span></p>
+              </div>
+              <div class="text-right text-[11px]">
+                <div class="flex items-center justify-end gap-1 ${st.color}">
+                  <span class="status-dot ${dot}"></span>
+                  <span>${st.label}</span>
+                </div>
+                <p class="text-gray-400 mt-1">Mở cửa: ${store.opening} – ${store.closing}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] text-gray-600 flex-wrap gap-2">
+              <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1"><i class="fas fa-phone text-red-500"></i><a href="tel:${store.phone}" class="font-semibold">${store.phone}</a></span>
+                ${distance ? `<span class="flex items-center gap-1 text-gray-500"><i class="fas fa-route"></i>${distance}</span>` : ''}
+              </div>
+              <div class="flex items-center gap-1">
+                ${store.services.includes('tryon') ? '<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Thử đồ</span>' : ''}
+                ${store.services.includes('exchange') ? '<span class="px-2 py-0.5 rounded-full bg-sky-50 text-sky-700">Đổi trả tại chỗ</span>' : ''}
+                ${store.services.includes('card') ? '<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700">Thanh toán thẻ</span>' : ''}
+                ${store.services.includes('parking') ? '<span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">Giữ xe miễn phí</span>' : ''}
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-1">
+              <div class="flex items-center gap-1 text-yellow-400 text-xs">
+                ${renderStars(store.rating || 4.5)}
+                <span class="text-gray-600 ml-1">${(store.rating || 4.5).toFixed(1)}</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <a href="tel:${store.phone}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-600 text-white font-semibold hover:bg-emerald-700"><i class="fas fa-phone"></i>Gọi ngay</a>
+                <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-900 text-white font-semibold hover:bg-black" onclick="openDirection('${encodeURIComponent(store.address)}')"><i class="fas fa-location-arrow"></i>Xem đường đi</button>
+                <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50" onclick="openStoreDetail(${store.id})"><i class="fas fa-circle-info"></i>Chi tiết</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderStars(rating) {
+      const full = Math.floor(rating);
+      const half = rating - full >= 0.5 ? 1 : 0;
+      let html = '';
+      for (let i=0;i<full;i++) html += '<i class="fas fa-star"></i>';
+      if (half) html += '<i class="fas fa-star-half-alt"></i>';
+      for (let i=full+half;i<5;i++) html += '<i class="far fa-star"></i>';
+      return html;
+    }
+
+    function updateSummary(count) {
+      const parts = [];
+      if (filterCity.value) parts.push(filterCity.value);
+      if (filterDistrict.value) parts.push(filterDistrict.value);
+      if (filterStatus.value === 'open') parts.push('đang mở');
+      if (filterStatus.value === 'closing-soon') parts.push('sắp đóng');
+      if (filterStatus.value === 'closed') parts.push('đã đóng');
+      if (activeServices.size) parts.push('có bộ lọc dịch vụ');
+      const text = parts.length ? `Lọc theo: ${parts.join(' • ')} – ${count} chi nhánh phù hợp.` : `Hiển thị tất cả chi nhánh Shop (`+count+`).`;
+      filterSummaryEl.textContent = text;
+    }
+
+    // MINI ANALYTICS FAKE REALTIME
+    function updateAnalytics() {
+      const online = Math.floor(Math.random() * 25) + 5;
+      analyticsOnlineEl.textContent = `${online} người`;
+
+      if (stores.length) {
+        const top = stores.reduce((best, s) => (s.rating||0) > (best.rating||0) ? s : best, stores[0]);
+        analyticsTopStoreEl.textContent = top.name;
+        const avg = stores.reduce((sum,s)=>sum+(s.rating||4.5),0)/stores.length;
+        analyticsRatingEl.textContent = avg.toFixed(1) + ' ⭐';
+      }
+
+      const now = new Date();
+      analyticsTimestampEl.textContent = now.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+    }
+
+    // Modal chi tiết
+    window.openStoreDetail = function(id) {
+      const store = stores.find(s => s.id === id);
+      if (!store) return;
+      const st = isStoreOpen(store);
+      const dot = getStatusDotColor(st.status);
+
+      const servicesHtml = [
+        store.services.includes('tryon') && 'Phòng thử đồ rộng rãi',
+        store.services.includes('exchange') && 'Hỗ trợ đổi trả tại chỗ',
+        store.services.includes('card') && 'Thanh toán thẻ / ví điện tử',
+        store.services.includes('parking') && 'Bãi giữ xe miễn phí'
+      ].filter(Boolean).map(t => `<li class="flex items-start gap-2 text-sm text-gray-700"><i class="fas fa-check text-emerald-500 mt-0.5"></i><span>${t}</span></li>`).join('');
+
+      const reviews = loadStoreReviews(id, store.reviews || []);
+
+      modalContent.innerHTML = `
+        <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+          <div class="md:w-5/12 space-y-3">
+            <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100">
+              <img src="${(store.images||[])[0] || 'images/store-placeholder.jpg'}" alt="${store.name}" class="w-full h-full object-cover">
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              ${(store.images||[]).slice(1,4).map(src => `
+                <div class="aspect-square rounded-xl overflow-hidden bg-gray-100">
+                  <img src="${src}" class="w-full h-full object-cover" alt="${store.name}">
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="md:flex-1 space-y-3 text-sm text-gray-700">
+            <div>
+              <h2 class="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2">
+                ${store.name}
+                ${(store.highlight||[]).includes('flagship') ? '<span class="badge-flagship text-[10px] px-2 py-0.5 rounded-full font-semibold">Flagship</span>' : ''}
+              </h2>
+              <p class="text-xs text-gray-500 mt-0.5">${store.address}</p>
+              <div class="flex items-center gap-2 mt-2 text-xs">
+                <span class="status-dot ${dot}"></span>
+                <span class="${st.color}">${st.label}</span>
+                <span class="text-gray-500">• Mở cửa: ${store.opening} – ${store.closing}</span>
+              </div>
+            </div>
+
+            <div class="border rounded-2xl p-3 bg-gray-50">
+              <p class="font-semibold mb-1 text-gray-800">Giờ hoạt động từng ngày</p>
+              <ul class="text-xs text-gray-600 space-y-0.5">
+                <li>Thứ 2 – Thứ 6: ${store.opening} – ${store.closing}</li>
+                <li>Thứ 7 – Chủ Nhật: ${store.opening} – ${store.closing}</li>
+                <li>Ngày lễ: Có thể điều chỉnh, vui lòng liên hệ hotline.</li>
+              </ul>
+            </div>
+
+            <div class="border rounded-2xl p-3">
+              <p class="font-semibold mb-1 text-gray-800">Dịch vụ hỗ trợ</p>
+              <ul class="space-y-1">
+                ${servicesHtml || '<li class="text-xs text-gray-500">Đang cập nhật thêm dịch vụ.</li>'}
+              </ul>
+            </div>
+
+            <div class="border rounded-2xl p-3 text-xs text-gray-600">
+              <p class="font-semibold mb-1 text-gray-800">Chính sách tại cửa hàng</p>
+              <ul class="space-y-1">
+                <li>Đổi size trong 7 ngày đối với sản phẩm nguyên tag, chưa giặt.</li>
+                <li>Hỗ trợ bảo hành đường may, nút, khóa kéo trong 30 ngày.</li>
+                <li>Cho thử đồ tại chỗ với đa số sản phẩm trừ đồ seal.</li>
+              </ul>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <a href="tel:${store.phone}" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700"><i class="fas fa-phone"></i>Gọi ngay</a>
+              <button onclick="copyAddress('${store.address.replace(/'/g,"\\'")}')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900 text-white text-xs font-semibold hover:bg-black"><i class="fas fa-copy"></i>Sao chép địa chỉ</button>
+              <button onclick="openDirection('${encodeURIComponent(store.address)}')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-600 text-white text-xs font-semibold hover:bg-sky-700"><i class="fas fa-diamond-turn-right"></i>Mở chỉ đường</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 border-t pt-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-sm font-semibold text-gray-800 flex items-center gap-1"><i class="fas fa-star text-yellow-400"></i>Đánh giá chi nhánh</p>
+            <span class="text-xs text-gray-500">${reviews.length} đánh giá</span>
+          </div>
+          <form onsubmit="return submitStoreReview(${id})" class="grid md:grid-cols-3 gap-2 text-xs mb-3">
+            <input id="rv-name-${id}" type="text" placeholder="Tên của bạn" class="border rounded-lg px-3 py-2 md:col-span-1">
+            <select id="rv-stars-${id}" class="border rounded-lg px-3 py-2">
+              <option value="5">5 ⭐</option>
+              <option value="4">4 ⭐</option>
+              <option value="3">3 ⭐</option>
+              <option value="2">2 ⭐</option>
+              <option value="1">1 ⭐</option>
+            </select>
+            <input id="rv-comment-${id}" type="text" placeholder="Nhận xét ngắn: Nhân viên thân thiện..." class="border rounded-lg px-3 py-2 md:col-span-1">
+            <button type="submit" class="md:col-span-3 mt-1 bg-gray-900 text-white rounded-lg py-2 font-semibold">Gửi đánh giá</button>
+          </form>
+          <div id="rv-list-${id}" class="space-y-2 text-xs text-gray-700">
+            ${reviews.map(r => `
+              <div class="border rounded-xl p-2.5 flex items-start gap-2">
+                <div class="w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center text-[11px] font-semibold">${(r.name||'G').charAt(0).toUpperCase()}</div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <p class="font-semibold">${r.name || 'Khách Shop'}</p>
+                    <span class="text-[11px] text-gray-400">${(r.date||'').slice(0,10)}</span>
+                  </div>
+                  <div class="text-yellow-400 text-[11px] mb-0.5">${renderStars(r.stars||5)}</div>
+                  <p>${r.comment || ''}</p>
+                </div>
+              </div>
+            `).join('') || '<p class="text-xs text-gray-500">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>'}
+          </div>
+        </div>
+      `;
+
+      modalEl.classList.add('active');
+    };
+
+    function loadStoreReviews(id, seed) {
+      const key = 'store_reviews_' + id;
+      const saved = JSON.parse(localStorage.getItem(key) || '[]');
+      return [...seed, ...saved];
+    }
+
+    window.submitStoreReview = function(id) {
+      const nameEl = document.getElementById('rv-name-' + id);
+      const starsEl = document.getElementById('rv-stars-' + id);
+      const commentEl = document.getElementById('rv-comment-' + id);
+      if (!commentEl || !starsEl) return false;
+      const comment = commentEl.value.trim();
+      if (!comment) return false;
+      const review = {
+        name: (nameEl && nameEl.value.trim()) || 'Khách Shop',
+        stars: Number(starsEl.value) || 5,
+        comment,
+        date: new Date().toISOString()
+      };
+      const key = 'store_reviews_' + id;
+      const list = JSON.parse(localStorage.getItem(key) || '[]');
+      list.push(review);
+      localStorage.setItem(key, JSON.stringify(list));
+      openStoreDetail(id); // re-render
+      return false;
+    };
+
+    window.copyAddress = function(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Đã sao chép địa chỉ cửa hàng.');
+      });
+    };
+
+    window.openDirection = function(encodedAddress) {
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+      window.open(url, '_blank');
+    };
+
+    modalClose.addEventListener('click', () => modalEl.classList.remove('active'));
+    modalEl.addEventListener('click', (e) => { if (e.target === modalEl) modalEl.classList.remove('active'); });
+
+    // Bộ lọc sự kiện
+    storeSearch.addEventListener('input', () => applyFilters());
+    filterCity.addEventListener('change', () => { renderDistrictOptions(); applyFilters(); });
+    filterDistrict.addEventListener('change', applyFilters);
+    filterStatus.addEventListener('change', applyFilters);
+
+    serviceChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const value = chip.getAttribute('data-service');
+        if (activeServices.has(value)) {
+          activeServices.delete(value);
+          chip.classList.remove('bg-gray-900','text-white');
+          chip.classList.add('bg-white','text-gray-700');
+        } else {
+          activeServices.add(value);
+          chip.classList.add('bg-gray-900','text-white');
+          chip.classList.remove('bg-white','text-gray-700');
+        }
+        applyFilters();
+      });
+    });
+
+    locateBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        alert('Trình duyệt không hỗ trợ định vị.');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          applyFilters();
+        },
+        () => {
+          alert('Không lấy được vị trí, sẽ dùng khoảng cách giả lập.');
+          userLocation = { lat: 0, lng: 0 };
+          applyFilters();
+        },
+        { enableHighAccuracy: true, timeout: 5000 }
+      );
+    });
+
+    // AI STORE ASSISTANT
+    function buildAiSuggestion() {
+      const purpose = aiPurposeEl.value;
+      const time = aiTimeEl.value;
+      const city = aiCityEl.value;
+      if (!purpose && !time && !city) {
+        aiOutputEl.textContent = 'Hãy chọn ít nhất 1 tiêu chí để mình gợi ý cho chuẩn nhất nhé.';
+        return;
+      }
+
+      // chọn store theo city trước, sau đó ưu tiên flagship / rating cao
+      let candidates = stores.slice();
+      if (city) candidates = candidates.filter(s => s.city === city) || candidates;
+      let best = candidates[0];
+      candidates.forEach(s => {
+        if ((s.rating||0) > (best.rating||0)) best = s;
+      });
+
+      let outfit = '';
+      if (purpose === 'outerwear') outfit = 'Bộ áo khoác gió + quần jeans slim fit, phối cùng sneaker trắng.';
+      else if (purpose === 'office') outfit = 'Set blazer + sơ mi trắng + quần kaki tối màu, đi kèm thắt lưng da.';
+      else if (purpose === 'street') outfit = 'Áo nỉ hoodie + quần jogger + sneaker, tone đen/xám cho phong cách streetwear.';
+      else if (purpose === 'accessory') outfit = 'Combo giày da / sneaker + thắt lưng + túi tote, đồng bộ màu sắc với outfit hiện tại.';
+
+      let timeHint = '';
+      if (time === 'morning') timeHint = 'Buổi sáng cửa hàng thường khá thoáng, bạn dễ thử đồ thoải mái.';
+      else if (time === 'afternoon') timeHint = 'Khung giờ chiều có lượng khách vừa phải, phù hợp ghé nhanh trong giờ nghỉ.';
+      else if (time === 'evening') timeHint = 'Buổi tối sau 19h là khung giờ đông hơn một chút, nhưng team Shop luôn hỗ trợ nhanh.';
+
+      const st = isStoreOpen(best);
+
+      aiOutputEl.innerHTML = `
+        <p class="mb-1"><strong>Đề xuất chi nhánh:</strong> ${best.name} (${best.city} - ${best.district})</p>
+        <p class="mb-1">Địa chỉ: ${best.address}</p>
+        <p class="mb-1 text-emerald-300">Trạng thái: ${st.label}</p>
+        ${outfit ? `<p class="mt-1"><strong>Gợi ý outfit:</strong> ${outfit}</p>` : ''}
+        ${timeHint ? `<p class="mt-1 text-slate-300">${timeHint}</p>` : ''}
+        <p class="mt-1 text-slate-400">Tip: Bạn có thể lưu sẵn hotline <span class="underline">${best.phone}</span> để đặt giữ size trước khi đến.</p>
+      `;
+    }
+
+    aiSuggestBtn.addEventListener('click', buildAiSuggestion);
+
+    // Cập nhật giỏ hàng
+    document.getElementById('cart-count').textContent = JSON.parse(localStorage.getItem('cart') || '[]').length;
+
+    // Khởi chạy
+    renderDistrictOptions();
+    applyFilters();
+    updateAnalytics();
+    setInterval(updateAnalytics, 8000);
+    buildAiSuggestion();
+  </script>
+</body>
+</html>
